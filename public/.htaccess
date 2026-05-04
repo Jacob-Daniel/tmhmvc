@@ -1,0 +1,35 @@
+# Disable directory listing
+Options -Indexes
+RewriteEngine On
+
+# Deny access to sensitive files
+<FilesMatch "\.(env|log|lock|json|config|sql)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# If the file or directory exists, serve it directly
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Admin routes
+RewriteRule ^admin/login/?$ /app/admin/login.php [L,QSA]
+RewriteRule ^admin/resetpwd/?$ /app/admin/resetpwd.php [L,QSA]
+RewriteRule ^admin/updateadminpassword/?$ /app/admin/updateAdminPassword.php [L,QSA]
+RewriteRule ^admin/(.*)$ /app/admin/$1 [L,QSA]
+
+# Front-end slug/subcategory routes
+RewriteRule ^([a-z0-9-]+)/([a-z0-9-]+)/?$ /index.php?slug=$1&subcategory=$2 [L,QSA]
+RewriteRule ^([a-z0-9-]+)/?$ /index.php?slug=$1 [L,QSA]
+RewriteRule ^$ /index.php [L]
+
+# Custom 404
+ErrorDocument 404 /index.php
+
+### DEV ONLY ###
+#SetEnv APP_ENV development
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_USER_AGENT} .* [NC]
+    RewriteRule .* - [F,L]
+</IfModule>
