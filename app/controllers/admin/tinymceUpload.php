@@ -18,8 +18,8 @@ $domain = !empty($domain) ? $domain : '';
 // Allowed origins
 $accepted_origins = [
     'http://localhost:3000',  // Vite dev server
-    'http://amvc.uk',
-    'https://amvc.uk',
+    'http://tmhamvc.uk',
+    'https://tmhamvc.uk',
     $domain
 ];
 

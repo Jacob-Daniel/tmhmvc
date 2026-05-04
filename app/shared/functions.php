@@ -673,6 +673,21 @@ function getprodlistdrilldown($id, $cond = "", $offset = 0, $perPage = PER_PAGE)
     return $res;
 }
 
+function geteventlistdrilldown($id, $cond = "", $offset = 0, $perPage = PER_PAGE) {
+    global $db;
+    $cats = rtrim(getCategories($id), ",");
+    $sql = sprintf(
+        "SELECT * FROM events WHERE cat_id IN (%s) AND active=1 %s LIMIT %d,%d",
+        $cats,
+        $cond,
+        $offset,
+        $perPage
+    );
+
+    if (!($res = $db->query($sql))) die($db->error . "--" . $sql);
+    return $res;
+}
+
 function getprodlistdrilldownsubcat($id)
 {
 	global $db;
@@ -916,7 +931,7 @@ function actionButtons(array $config = []) {
     >
 
         <?php if (isset($targets['save'])) : ?>
-            <button type="button" data-action="save" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition">
+            <button type="button" data-action="save" class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 transition">
                 Save
             </button>
         <?php endif; ?>
@@ -928,7 +943,7 @@ function actionButtons(array $config = []) {
         <?php endif; ?>
 
         <?php if (isset($targets['new'])) : ?>
-            <button type="button" data-action="new" class="bg-gray-200 px-2 py-1 rounded hover:bg-gray-300 transition">
+            <button type="button" data-action="new" class="bg-blue-600 text-white px-2 py-1 rounded hover:bg-blue-700 transition">
                 New
             </button>
         <?php endif; ?>
@@ -953,6 +968,91 @@ function actionButtons(array $config = []) {
 
     </div>
 <?php
+}
+
+function buildTable($data,$form,$list,$table) {
+    ob_start();
+    ?>
+
+<div>
+    <div class="overflow-x-auto">
+      <table id="table-1" class="min-w-full text-sm text-left border-collapse text-zinc-900">
+        <thead class="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
+          <tr>
+            <th class="px-4 py-3">Row</th>
+            <th class="px-4 py-3">Title</th>
+            <th class="px-4 py-3">Slug</th>
+            <th class="px-4 py-3 text-center">Active</th>
+            <th class="px-4 py-3 text-center">View/Edit</th>
+            <th class="px-4 py-3 text-center">Delete</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200">
+<?php
+$i=1;
+if ($data->num_rows):
+    while ($item = $data->fetch_object()):
+        $cat = getRecord('categories', 'id', $item->cat_id);
+?>
+          <tr class="hover:bg-gray-50 transition text-zinc-900">
+            <td class="px-4 py-3">
+              <?= $i ?>
+            </td>
+            <td class="px-4 py-3">
+              <?php createEditField($table, 'title', 'pn', $item->id, stripslashes($item->title), '200px'); ?>
+            </td><td class="px-4 py-3">
+              <?php echo stripslashes($item->slug); ?>
+            </td>
+
+            <td class="px-4 py-3 text-center">
+              <span class="cursor-pointer font-medium text-blue-600 hover:text-blue-800"
+                    onclick="flipField($table,'active',<?= $item->id ?>)"
+                    id="active_<?= $item->id ?>">
+                <?= $item->active ? 'Y' : 'N' ?>
+              </span>
+            </td>
+
+            <td class="px-4 py-3 text-center">
+<?php
+                actionButtons([
+                    'module' => $table,
+                    'id' => $item->id,
+                    'targets' => [
+                        'edit'  => $form,
+                    ]
+                ]);
+?>
+            </td>
+            <td class="px-4 py-3 text-center">
+<?php
+                actionButtons([
+                    'module' => $table,
+                    'id' => $item->id,
+                    'targets' => [
+                        'delete'  => $list,
+                    ]
+                ]);
+?>
+            </td>
+          </tr>
+<?php
+$i++;
+    endwhile;
+else:
+?>
+          <tr>
+            <td colspan="6" class="px-4 py-6 text-center text-gray-500">No items currently in system</td>
+          </tr>
+<?php endif; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+<div id="flagpanel"></div>
+<?php
+    return ob_get_clean();
 }
 
 function buildProductTable($products) {

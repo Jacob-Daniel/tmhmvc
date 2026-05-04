@@ -1,8 +1,8 @@
 {
-  "name": "Admin MVC Light",
+  "name": "TMH Admin MVC Light",
   "version": "1.0.0",
   "type": "module",
-  "description": "Project Repo",
+  "description": "TMH CMS",
   "scripts": {
     "dev:front": "vite --config vite.front.config.js",
     "dev:admin": "vite --config vite.admin.config.js",

@@ -1,4 +1,5 @@
 import { initTinyMCE } from "./tinymce.js";
+import { initFlatpickr } from "./flatpickr.js";
 import { initImageModal } from "./imageModalNew";
 
 export function initForm() {
@@ -6,18 +7,18 @@ export function initForm() {
         initTinyMCE();
         initFlatpickr();
         initImageModal();
+        toggleRecurring();
     }, 100);
 }
 
-function initFlatpickr() {
-    if (!window.flatpickr) {
-        console.warn("Flatpickr not loaded");
-        return;
+function toggleRecurring() {
+    const recurringToggle = document.getElementById("is_recurring");
+    if (recurringToggle) {
+        recurringToggle.addEventListener("change", function () {
+            const fields = document.getElementById("recurring-fields");
+            if (fields) {
+                fields.classList.toggle("hidden", !this.checked);
+            }
+        });
     }
-    const dateInputs = document.querySelectorAll(".datepickr");
-    if (dateInputs.length === 0) {
-        console.warn('No elements with class "datepickr" found');
-        return;
-    }
-    flatpickr(".datepickr", { dateFormat: "Y-m-d" });
 }

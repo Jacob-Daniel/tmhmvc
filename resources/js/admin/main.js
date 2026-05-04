@@ -13,6 +13,8 @@ import { initAjaxForms, saveForm } from "./components/save";
 import { editF, hideEdit, goEdit, goProds } from "./components/editField.ts";
 import { multipleDelete, updateDeleteButton } from "./components/delImage";
 import { initActionDelegates } from "./components/actionButtons.ts";
+// import { initEmailCampaign } from "./components/emailCampaign";
+import { initEmailForm } from "./components/emailForm";
 
 import {
     initImageGallery,
@@ -27,17 +29,6 @@ async function loadContent(action, item, delitem, page, condition = "") {
     const el = document.getElementById("main");
     const loading = document.getElementById("loading");
     if (!el) return console.error("Target element not found for loadContent");
-
-    //TODO: REMOVE delitem param and this:
-    // if (delitem && action !== "gallery") {
-    //     if (
-    //         !confirm(
-    //             "Are you sure you want to delete this item from the system",
-    //         )
-    //     ) {
-    //         return false;
-    //     }
-    // }
 
     const query = new URLSearchParams({
         action,
@@ -119,7 +110,7 @@ function initPageJS(action, params = {}) {
     switch (action) {
         case "pageform":
         case "catform":
-        case "prodform":
+        case "eventform":
         case "configform":
             initForm();
             initImageModal();
@@ -130,7 +121,7 @@ function initPageJS(action, params = {}) {
         case "pagelist":
         case "catlist":
         case "navlist":
-        case "prodlist":
+        case "eventlist":
             initList(params);
             break;
         case "imageform":
@@ -140,6 +131,14 @@ function initPageJS(action, params = {}) {
             break;
         case "gallery":
             initGallery(params);
+            break;
+        case "emailform":
+            initEmailForm();
+            initForm();
+            initImageModal();
+            break;
+        case "emaillist":
+            initList(params);
             break;
         default:
             initLogin();

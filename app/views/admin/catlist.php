@@ -7,14 +7,16 @@
 
     <legend class="font-semibold ms-3">Categories</legend>
 
-    <div id="filter-bar" class="flex items-center space-x-2 mb-2 p-3">
-        <button 
-          type="button"
-          onclick="loadContent('catform')"
-          id="newCatBtn" 
-          class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 ml-auto">
-            New Category
-        </button>
+    <div id="filter-bar" class="flex justify-end space-x-2 mb-2 p-3">
+
+    <?php
+        actionButtons([
+            'module' => 'categories',
+            'targets' => [
+                'new' => 'catform',
+            ]
+        ]);
+    ?>
     </div>
     <table id="table-1" class="min-w-full text-sm text-left border-collapse text-zinc-900">
       <thead class="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">

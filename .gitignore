@@ -1,0 +1,26 @@
+# Environment
+**/.env
+
+# Node & vendor
+**/node_modules/
+**/vendor/
+
+# Config files
+**/sftp-config.json
+**/dbconfig.php
+**/config.php
+
+# Images (any folder)
+**/images/
+
+#safe to ignore
+cache/
+uploads/
+logs/
+*.log
+*.sql
+.tmp/
+**/dist/
+pnpm.workspace.yaml
+pnpm.lock.yaml
+**/.htaccess
