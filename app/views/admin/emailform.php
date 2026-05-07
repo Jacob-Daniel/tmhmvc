@@ -98,7 +98,7 @@
                         <option value="">Select placeholder</option>
                         <?php while ($p = $pages->fetch_object()): ?>
                             <option value="{PAGE_<?= (int)$p->id ?>}">
-                                <?= htmlspecialchars(stripslashes($p->pagename), ENT_QUOTES) ?>
+                                <?= htmlspecialchars(stripslashes($p->slug), ENT_QUOTES) ?>
                             </option>
                         <?php endwhile; ?>
                     </select>

@@ -10,4 +10,5 @@
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="memberlist">Email Groups</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="massmailform">Send Email</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="userform">User</li>';
+	echo '<li class="nav-item cursor-pointer text-sm" data-route="apitokenform">API Token</li>';
 ?>

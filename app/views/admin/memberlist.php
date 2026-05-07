@@ -6,8 +6,9 @@
     <legend class="font-semibold ms-3">
         Members &mdash; <?= htmlspecialchars($group->group_name, ENT_QUOTES) ?>
     </legend>
-    <div class="flex items-center space-x-2 mb-2 p-3">
+    <div class="flex items-center space-x-2 mb-2 p-3 justify-end">
         <?php actionButtons([
+            'class' => 'flex space-y-2'
             'module'  => 'emailgroupmembers',
             'id'      => 0,
             'targets' => [

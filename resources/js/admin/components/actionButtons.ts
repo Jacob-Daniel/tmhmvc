@@ -39,6 +39,19 @@ export function initActionDelegates() {
                 if (!form) return;
                 form.requestSubmit();
                 break;
+            case "token":
+                const input = document.getElementById(
+                    "token-value",
+                ) as HTMLInputElement;
+                input.removeAttribute("readonly");
+                const arr = new Uint8Array(32);
+                crypto.getRandomValues(arr);
+                input.value = Array.from(arr)
+                    .map((b) => b.toString(16).padStart(2, "0"))
+                    .join("");
+                input.setAttribute("readonly", "");
+                console.log("token", input);
+                break;
         }
     });
 }

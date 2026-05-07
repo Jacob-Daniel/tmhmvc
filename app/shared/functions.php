@@ -920,9 +920,10 @@ function actionButtons(array $config = []) {
     $module = $config['module'] ?? 'page';
     $id = $config['id'] ?? '';
     $targets = $config['targets'] ?? []; 
+    $class = $config['class'] ?? "flex flex-col space-y-2 min-w-0";
 ?>
     <div 
-      class="flex flex-col space-y-2 min-w-0"
+      class="<?= $class ?>"
       data-module="<?= htmlspecialchars($module) ?>"
       data-id="<?= htmlspecialchars($id) ?>"
       <?php foreach ($targets as $action => $target) : ?>
@@ -965,6 +966,12 @@ function actionButtons(array $config = []) {
                 Edit
             </button>
         <?php endif; ?>
+
+		<?php if (isset($targets['token'])) : ?>
+		    <button id="btn-generate-token" type="button" data-action="token" class="bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700 transition">
+		        <?= empty($id) ? 'Generate Token' : 'Regenerate Token' ?>
+		    </button>
+		<?php endif; ?>        
 
     </div>
 <?php
@@ -1243,3 +1250,20 @@ function cleanupOrphanImages(mysqli $db, bool $dryRun = false): array
 
     return ['deleted' => $deleted, 'errors' => $errors];
 }
+
+// function htmlToBlocks(string $html): array {
+//     $blocks = [];
+//     $dom = new DOMDocument();
+//     libxml_use_internal_errors(true);
+//     $dom->loadHTML(mb_convert_encoding($html, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+//     libxml_clear_errors();
+
+//     foreach ($dom->childNodes as $node) {
+//         $tag = $node->nodeName;
+//         $blocks[] = [
+//             'type' => $tag,
+//             'html' => $dom->saveHTML($node),
+//         ];
+//     }
+//     return $blocks;
+// }

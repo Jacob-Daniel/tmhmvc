@@ -8,12 +8,6 @@ requireAdmin();
 $isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) 
     && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
 
-
-/*
-|--------------------------------------------------------------------------
-| FULL PAGE RENDER
-|--------------------------------------------------------------------------
-*/
 if (!$isAjax) {
     require __DIR__ . '/../../app/admin_core/head.php';
     require __DIR__ . '/../../app/admin_core/header.php';
@@ -21,12 +15,6 @@ if (!$isAjax) {
     require __DIR__ . '/../../app/admin_core/footer.php';
     exit;
 }
-
-/*
-|--------------------------------------------------------------------------
-| AJAX ROUTING
-|--------------------------------------------------------------------------
-*/
 
 $action = $_GET['action'] ?? null;
 
@@ -56,6 +44,7 @@ $allowedActions = [
     'flipfield',
     'menu',
     'loadcontent',
+    'apitokenform',
 ];
 
 if (!in_array($action, $allowedActions)) {

@@ -65,21 +65,14 @@ $allowed = [
     'update_password',
     'savemassmail',
     'massmailform',
+    'apievents',
 ];
-
-// --------------------------------------------------
-// Reject anything not allowed
-// --------------------------------------------------
 
 if (!in_array($endpoint, $allowed)) {
     http_response_code(404);
     echo json_encode(['error' => 'Invalid endpoint']);
     exit;
 }
-
-// --------------------------------------------------
-// Public endpoint: LOGIN
-// --------------------------------------------------
 
 if ($endpoint === 'login') {
 
@@ -109,7 +102,11 @@ if ($endpoint === 'login') {
 // Everything else requires authentication
 // --------------------------------------------------
 
-requireAdmin();
+$publicApiEndpoints = ['apievents'];
+
+if (!in_array($endpoint, $publicApiEndpoints)) {
+    requireAdmin();
+}
 
 // --------------------------------------------------
 // Resolve controller or view

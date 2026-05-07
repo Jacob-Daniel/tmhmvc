@@ -3,13 +3,6 @@ declare(strict_types=1);
 
 header('Content-Type: application/json');
 
-/*
-|--------------------------------------------------------------------------
-| Helpers
-|--------------------------------------------------------------------------
-*/
-
-
 if (isset($_POST['password']) && $_POST['password'] !== '') {
     $password = trim($_POST['password']);
     $confirm = trim($_POST['password_confirm']);
