@@ -1,3 +1,52 @@
+<?php
+// ── Google token status banner ──────────────────────────────────────────────
+if ($tokenStatus === 'missing'): ?>
+    <div class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
+        <strong>Initial Google Access Required.</strong>
+        <a href="<?= htmlspecialchars($authUrl, ENT_QUOTES) ?>"
+           class="ml-2 underline font-medium">Grant Gmail Access →</a>
+    </div>
+
+<?php elseif ($tokenStatus === 'expiring'): ?>
+    <div class="mb-4 rounded border border-amber-300 bg-amber-50 px-4 py-3 text-sm text-amber-800">
+        <strong>Token needs refresh.</strong>
+        <button
+            type="button"
+            class="ml-2 underline font-medium"
+            onclick="loadContent('massmailform', 0, 0, 0, 'refresh')"
+        >Re-authenticate</button>
+    </div>
+
+<?php else: ?>
+    <div class="mb-4 rounded border border-green-300 bg-green-50 px-4 py-3 text-sm text-green-800">
+        ✓ Google token valid &mdash; expires
+        <span class="font-mono"><?= date('Y-m-d H:i', $tokenExpires) ?></span>
+    </div>
+<?php endif; ?>
+
+<?php
+// ── Quota / pending info ─────────────────────────────────────────────────────
+if ($remainingToSend > 0): ?>
+    <div class="mb-2 rounded border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-800">
+        You can still send <strong><?= (int)$remainingToSend ?></strong> emails today.
+    </div>
+<?php else: ?>
+    <div class="mb-2 rounded border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800">
+        Daily Google Mail limit reached. No more emails can be sent today.
+    </div>
+<?php endif; ?>
+
+<?php if ($totalPending > 0): ?>
+    <div class="mb-4 rounded border border-blue-200 bg-blue-50 px-4 py-2 text-sm text-blue-800">
+        <strong><?= (int)$totalPending ?></strong> email(s) pending transmission:
+        <?php while ($pt = $pendingTemplates->fetch_object()): ?>
+            <span class="ml-1 font-mono">
+                [#<?= (int)$pt->id ?> <?= htmlspecialchars($pt->em_name, ENT_QUOTES) ?>]
+            </span>
+        <?php endwhile; ?>
+    </div>
+<?php endif; ?>
+
 <form
     action="/admin/api/sendmassmail"
     method="post"

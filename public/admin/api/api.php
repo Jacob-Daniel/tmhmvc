@@ -66,6 +66,7 @@ $allowed = [
     'savemassmail',
     'massmailform',
     'apievents',
+    'savemassmail',
 ];
 
 if (!in_array($endpoint, $allowed)) {
