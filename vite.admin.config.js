@@ -28,10 +28,12 @@ export default defineConfig(({ mode }) => ({
       output: {
         entryFileNames: "js/[name].bundle.js",
         chunkFileNames: "js/[name].[hash].js",
-        assetFileNames: (assetInfo) =>
-          assetInfo.name && assetInfo.name.endsWith(".css")
-            ? "css/[name][extname]"
-            : "assets/[name].[hash][extname]",
+        assetFileNames: (assetInfo) => {
+          if (assetInfo.name?.endsWith(".css")) {
+            return "css/[name][extname]";
+          }
+          return "assets/[name].[hash][extname]";
+        },
       },
     },
   },

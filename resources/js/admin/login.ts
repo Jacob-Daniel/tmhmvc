@@ -1,4 +1,3 @@
-import "../../css/admin/main.css";
 export function initLogin() {
     const form = document.getElementById("login") as HTMLFormElement;
     if (!form) return;

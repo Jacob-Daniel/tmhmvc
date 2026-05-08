@@ -171,5 +171,4 @@ window.showMessage = showMessage;
 window.saveForm = saveForm;
 window.bgt = bgt;
 window.bgt_multi_img = bgt_multi_img;
-window.flatpickr = flatpickr;
 window.openImageModal = openImageModal;

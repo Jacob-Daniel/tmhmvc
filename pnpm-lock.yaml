@@ -17,9 +17,6 @@ importers:
       '@tailwindcss/vite':
         specifier: ^4.1.18
         version: 4.2.4(vite@7.3.2(jiti@2.6.1)(lightningcss@1.32.0))
-      animate.sass:
-        specifier: ^1.0.1
-        version: 1.0.1
       flatpickr:
         specifier: ^4.6.13
         version: 4.6.13
@@ -578,9 +575,6 @@ packages:
   '@types/estree@1.0.8':
     resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
-  animate.sass@1.0.1:
-    resolution: {integrity: sha512-YJ5WSbtDyHtpZAUxXpSoWqdaiGapQBA6a2MOT+KGqhcdTFhGlkpP5DvjlSkJVytCsWTuF/gTvx0e80VJ3jOrrg==}
-
   autoprefixer@10.5.0:
     resolution: {integrity: sha512-FMhOoZV4+qR6aTUALKX2rEqGG+oyATvwBt9IIzVR5rMa2HRWPkxf+P+PAJLD1I/H5/II+HuZcBJYEFBpq39ong==}
     engines: {node: ^10 || ^12 || >=14}
@@ -659,10 +653,6 @@ packages:
   jiti@2.6.1:
     resolution: {integrity: sha512-ekilCSN1jwRvIbgeg/57YFh8qQDNbwDb9xT/qu2DAHbFFZUicIl4ygVaAvzveMhMVr3LnpSKTNnwt8PoOfmKhQ==}
     hasBin: true
-
-  jquery@1.12.4:
-    resolution: {integrity: sha512-UEVp7PPK9xXYSk8xqXCJrkXnKZtlgWkd2GsAQbMRFK6S/ePU2JN5G2Zum8hIVjzR3CpdfSqdqAzId/xd4TJHeg==}
-    deprecated: This version is deprecated. Please upgrade to the latest version or find support at https://www.herodevs.com/support/jquery-nes.
 
   jsonfile@6.2.1:
     resolution: {integrity: sha512-zwOTdL3rFQ/lRdBnntKVOX6k5cKJwEc1HdilT71BWEu7J41gXIB2MRp+vxduPSwZJPWBxEzv4yH1wYLJGUHX4Q==}
@@ -1197,10 +1187,6 @@ snapshots:
 
   '@types/estree@1.0.8': {}
 
-  animate.sass@1.0.1:
-    dependencies:
-      jquery: 1.12.4
-
   autoprefixer@10.5.0(postcss@8.5.13):
     dependencies:
       browserslist: 4.28.2
@@ -1288,8 +1274,6 @@ snapshots:
       is-extglob: 2.1.1
 
   jiti@2.6.1: {}
-
-  jquery@1.12.4: {}
 
   jsonfile@6.2.1:
     dependencies:
