@@ -249,10 +249,10 @@ if ($table === 'events' && !empty($data['cat_id'])) {
     $catSlug = $cat->slug ?? '';
 }
 $isrPathMap = [
-    'pages'      => ['/', '/pages/'    . ($data['slug'] ?? '')],
-    'categories' => ['/', '/categories/' . ($data['slug'] ?? '')],
+    'pages'      => ['/', '/'. ($data['slug'] ?? '')],
+    'categories' => ['/', '/whats-on'],
     'events'     => ['/', '/whats-on/' . $catSlug . '/' . ($data['slug'] ?? '')],
-    'navigation' => ['/'],
+    'navigation' => ['/','/whats-on','/our-story','/donate','/hire','/subscribe','/find-us'],
 ];
 
 if (isset($isrPathMap[$table])) {
