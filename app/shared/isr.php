@@ -5,7 +5,7 @@ function revalidateISR(array $paths): array
 {
     $secret  = defined('NEXTJS_ISR_SECRET') ? NEXTJS_ISR_SECRET : '';
     $baseUrl = defined('NEXTJS_BASE_URL')   ? NEXTJS_BASE_URL   : '';
-    print_r($paths,true);
+    // print_r($paths,true);
     $responses = [];
 
     foreach ($paths as $path) {

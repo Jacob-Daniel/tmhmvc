@@ -159,8 +159,6 @@ foreach ($_POST as $key => $value) {
 |--------------------------------------------------------------------------
 */
 
-print_r($data);
-
 if ($slugField !== null) {
 
     if (empty($data[$slugField]) && isset($data['title'])) {
