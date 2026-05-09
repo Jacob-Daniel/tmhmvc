@@ -82,7 +82,7 @@ if ($endpoint === 'login') {
         echo json_encode(['success' => false, 'error' => 'Method not allowed']);
         exit;
     }
-    $locked = $_SESSION['failed_lock'] ? 'Too many attempts, locked for 5 minutes.' : null;
+    $locked = ($_SESSION['failed_lock'] ?? null) ? 'Too many attempts, locked for 5 minutes.' : null;
     $_POST['login'] = 1;
     if (handleLogin()) {
         echo json_encode([

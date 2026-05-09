@@ -159,6 +159,8 @@ foreach ($_POST as $key => $value) {
 |--------------------------------------------------------------------------
 */
 
+print_r($data);
+
 if ($slugField !== null) {
 
     if (empty($data[$slugField]) && isset($data['title'])) {
@@ -237,10 +239,29 @@ if ($id) {
     $message = 'Created successfully.';
 }
 
-$response = [
-    'message' => $message, 
-    'type' => 'success'  
+/*
+|--------------------------------------------------------------------------
+| ISR Revalidation
+|--------------------------------------------------------------------------
+*/
+
+$catSlug = '';
+if ($table === 'events' && !empty($data['cat_id'])) {
+    $cat = getRecord('categories', 'id', $data['cat_id']);
+    $catSlug = $cat->slug ?? '';
+}
+$isrPathMap = [
+    'pages'      => ['/', '/pages/'    . ($data['slug'] ?? '')],
+    'categories' => ['/', '/categories/' . ($data['slug'] ?? '')],
+    'events'     => ['/', '/whats-on/' . $catSlug . '/' . ($data['slug'] ?? '')],
+    'navigation' => ['/'],
 ];
 
+if (isset($isrPathMap[$table])) {
+    require_once __DIR__ . '/../../shared/isr.php';
+    revalidateISR($isrPathMap[$table]);
+}
+
+$response = ['message' => $message, 'type' => 'success'];
 echo json_encode($response);
 exit;

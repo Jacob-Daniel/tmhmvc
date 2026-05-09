@@ -90,22 +90,6 @@
                 </select>
             </div>
 
-            <!-- Secondary Categories -->
-            <div class="border p-3 rounded">
-                <label class="block text-sm font-medium mb-2">Secondary Categories</label>
-                <select name="event_cats[]"
-                        multiple
-                        class="w-full border rounded p-2 text-sm chosen-select"
-                        size="4">
-                    <?php while ($cat = $categories_secondary->fetch_object()): ?>
-                        <option value="<?= $cat->id ?>"
-                            <?= in_array((int)$cat->id, $subcats) ? 'selected' : '' ?>>
-                            <?= htmlspecialchars($cat->slug) ?>
-                        </option>
-                    <?php endwhile; ?>
-                </select>
-            </div>
-
             <!-- Price -->
             <div class="flex flex-col border p-3 rounded">
                 <label class="text-sm font-medium mb-1">Price</label>

@@ -30,7 +30,7 @@ $featured      = ((int)($rec?->featured ?? 0) === 1) ? 'checked' : '';
 
 $days_array=array('Sun','Mon','Tues','Wed','Thurs','Fri','Sat');
 
-$categories = getList('categories', 'WHERE parent_id != 0 ORDER BY slug');
+$categories = getList('categories', 'ORDER BY slug');
 
 // Secondary categories
 $subcats = [];
