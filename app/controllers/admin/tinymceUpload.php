@@ -24,8 +24,8 @@ $accepted_origins = [
 ];
 
 // Upload directory - relative to this file in public/admin/api/
-$uploadDir = __DIR__ . '/../../../../public/graphics/uploads/';
-$uploadUrl = '/graphics/uploads/'; // URL path for browser access
+$uploadDir = __DIR__ . '/../../../../public/graphics/images/';
+$uploadUrl = '/graphics/images/'; // URL path for browser access
 
 // Create directory if it doesn't exist
 if (!is_dir($uploadDir)) {

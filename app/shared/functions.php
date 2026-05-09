@@ -1174,7 +1174,7 @@ function validatePassword(string $password, string $confirm = null): array {
 function img_stem(string $imagepath): array
 {
     $stem = pathinfo($imagepath, PATHINFO_FILENAME);
-    $base = BASE_URL . '/uploads/';
+    $base = BASE_URL . '/images/';
     return [
         'src'  => $base . $stem,           // original: uploads/image
         'webp' => $base . 'webp/' . $stem, // webp copy: uploads/webp/image

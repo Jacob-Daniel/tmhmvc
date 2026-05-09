@@ -163,7 +163,7 @@ export function handleImageSelect(filePath: string) {
             currentImgId,
         ) as HTMLImageElement | null;
 
-        const src = `/uploads/thumbs/200/${filePath}`;
+        const src = `/images/thumbs/200/${filePath}`;
 
         if (!img && box) {
             img = document.createElement("img");
