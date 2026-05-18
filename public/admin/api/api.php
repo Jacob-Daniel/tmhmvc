@@ -45,7 +45,6 @@ $allowed = [
     'memberlist',
     'memberform',
     'configform',
-    'buildpagestable',
     'editfield',
     'extraimages',
     'flipfield',
