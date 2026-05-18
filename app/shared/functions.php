@@ -1016,7 +1016,8 @@ function buildTable(mysqli_result $data, array $config): string
             <?php while ($row = $data->fetch_object()): ?>
               <tr class="hover:bg-gray-50 transition text-zinc-900">
                 <?php foreach ($config['columns'] as $col): ?>
-                  <td class="px-4 py-3 <?= $col['center'] ?? false ? 'text-center' : '' ?>">
+                  <td class="px-4 py-3 <?= $col['center'] ?? false ? 'text-center' : '' ?>"
+					style="<?= isset($col['width']) ? 'width:' . $col['width'] . ';max-width:' . $col['width'] . ';overflow:hidden;text-overflow:ellipsis;white-space:nowrap;' : '' ?>">
                     <?php match($col['type']) {
                       'counter'   => print($i),
                       'text'      => print(stripslashes($row->{$col['field']} ?? '')),
@@ -1237,9 +1238,9 @@ function buildListQuery(array $config): array
         // $items = $dataStmt->get_result()->fetch_all(MYSQLI_ASSOC); // Just for reference how to convert to ASSOC!
     }
 
-    error_log("buildListQuery: table=$table search=$search fields=" . implode(',', $searchFields));
-    error_log("buildListQuery: where=$where params=" . implode(',', $params));
-    error_log("buildListQuery: totalRows=$totalRows itemCount=" . $items->num_rows);
+    // error_log("buildListQuery: table=$table search=$search fields=" . implode(',', $searchFields));
+    // error_log("buildListQuery: where=$where params=" . implode(',', $params));
+    // error_log("buildListQuery: totalRows=$totalRows itemCount=" . $items->num_rows);
 
     return [
         'items'    => $items,

@@ -19,7 +19,7 @@ if ((int)($_GET['item'] ?? 0) > 0) {
 
     $result = buildListQuery([
         'table'         => 'events',
-        'search_fields' => ['title', 'description', 'location'],
+        'search_fields' => ['title', 'summary', 'slug','content'],
         'order'         => 'ORDER BY id DESC',
         'extra_where'   => 'AND active=1',
         'drill_id'      => (int)($_GET['item'] ?? 0),

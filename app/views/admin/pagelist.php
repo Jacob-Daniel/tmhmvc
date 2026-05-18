@@ -14,6 +14,7 @@
             id="psch"
             data-table="pages"
             data-field="title"
+            data-target="restable"
             placeholder="Search Title"
             class="flex-1 min-w-[200px] px-3 py-1.5 border rounded-md text-sm focus:ring-2"
         /> 
@@ -22,7 +23,7 @@
             Create New Page
         </button>
     </div>
-    <div id="restab" class="overflow-x-auto">
-        <?php require_once __DIR__ . '/../../controllers/admin/buildpagestable.php';?>
+    <div id="restable" class="overflow-x-auto">
+        <?= buildTable($pages, $config); ?>
     </div>
 </fieldset>
