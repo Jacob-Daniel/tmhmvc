@@ -55,7 +55,6 @@
                 Upload
             </button>
 
-
             <button type="button" onclick="loadContent('gallery',{page:-1})" class="px-3 py-1.5 bg-gray-600 text-white text-sm font-medium rounded hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                 <i class="fa fa-refresh mr-1"></i> Refresh
             </button>

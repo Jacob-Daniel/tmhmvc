@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
-
-if (filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) === -1) {
-    unset(
-        $_SESSION['srch_fld'],
-        $_SESSION['srch_val'],
-        $_SESSION['image_item']
-    );
-    header('Location: /admin/index.php?action=gallery');
-    exit;
-}
+print_r($_SESSION);
+// if (filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) === -1) {
+//     unset(
+//         $_SESSION['srch_fld'],
+//         $_SESSION['srch_val'],
+//         $_SESSION['image_item']
+//     );
+//     header('Location: /admin/index.php?action=gallery');
+//     exit;
+// }
 
 $condition = filter_input(INPUT_GET, 'condition', FILTER_SANITIZE_SPECIAL_CHARS) ?? '';
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;

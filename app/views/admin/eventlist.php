@@ -20,6 +20,7 @@
             placeholder="Search" 
             data-table="events"
             data-field="slug"
+            data-target="restable"
             class="flex-1 w-[8rem] px-3 py-1.5 border rounded-md text-sm"
            >
   
@@ -36,8 +37,8 @@
         <pre id="r" class="text-sm text-gray-600"></pre>
     </div>
 
-    <div id="restab" class="overflow-x-auto">
-        <?= buildTable($events,'eventform','eventlist','events'); ?>
+    <div id="restable" class="overflow-x-auto">
+        <?= buildTable($events, $config); ?>
     </div>
 </fieldset>
 

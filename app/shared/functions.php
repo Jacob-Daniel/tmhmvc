@@ -673,11 +673,13 @@ function getprodlistdrilldown($id, $cond = "", $offset = 0, $perPage = PER_PAGE)
     return $res;
 }
 
-function geteventlistdrilldown($id, $cond = "", $offset = 0, $perPage = PER_PAGE) {
+function getListDrillDown($id,$table,$field, $cond = "", $offset = 0, $perPage = PER_PAGE) {
     global $db;
     $cats = rtrim(getCategories($id), ",");
     $sql = sprintf(
-        "SELECT * FROM events WHERE cat_id IN (%s) AND active=1 %s LIMIT %d,%d",
+        "SELECT * FROM %s WHERE %s IN (%s) AND %s LIMIT %d,%d",
+        $table,
+        $field,
         $cats,
         $cond,
         $offset,
@@ -977,176 +979,79 @@ function actionButtons(array $config = []) {
 <?php
 }
 
-function buildTable($data,$form,$list,$table) {
+function buildTable(mysqli_result $data, array $config): string
+{
+    /*
+     * $config = [
+     *   'table'   => 'products',
+     *   'form'    => 'prodform',
+     *   'list'    => 'prodlist',
+     *   'colspan' => 6,
+     *   'headers' => ['Row', 'Title', 'Slug', 'Active', 'View/Edit', 'Delete'],
+     *   'columns' => [
+     *     ['type' => 'counter'],
+     *     ['type' => 'editfield', 'field' => 'title', 'mode' => 'pn', 'width' => '200px'],
+     *     ['type' => 'text',      'field' => 'slug'],
+     *     ['type' => 'flip',      'field' => 'active'],
+     *     ['type' => 'action',    'target' => 'edit'],
+     *     ['type' => 'action',    'target' => 'delete'],
+     *   ],
+     * ]
+     */
     ob_start();
+    $table = $config['table'];
+    $i = 1;
     ?>
-
-<div>
     <div class="overflow-x-auto">
-      <table id="table-1" class="min-w-full text-sm text-left border-collapse text-zinc-900">
+      <table class="min-w-full text-sm text-left border-collapse text-zinc-900">
         <thead class="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
           <tr>
-            <th class="px-4 py-3">Row</th>
-            <th class="px-4 py-3">Title</th>
-            <th class="px-4 py-3">Slug</th>
-            <th class="px-4 py-3 text-center">Active</th>
-            <th class="px-4 py-3 text-center">View/Edit</th>
-            <th class="px-4 py-3 text-center">Delete</th>
+            <?php foreach ($config['headers'] as $header): ?>
+              <th class="px-4 py-3"><?= htmlspecialchars($header) ?></th>
+            <?php endforeach; ?>
           </tr>
         </thead>
-
         <tbody class="divide-y divide-gray-200">
-<?php
-$i=1;
-if ($data->num_rows):
-    while ($item = $data->fetch_object()):
-        $cat = getRecord('categories', 'id', $item->cat_id);
-?>
-          <tr class="hover:bg-gray-50 transition text-zinc-900">
-            <td class="px-4 py-3">
-              <?= $i ?>
-            </td>
-            <td class="px-4 py-3">
-              <?php createEditField($table, 'title', 'pn', $item->id, stripslashes($item->title), '200px'); ?>
-            </td><td class="px-4 py-3">
-              <?php echo stripslashes($item->slug); ?>
-            </td>
-
-            <td class="px-4 py-3 text-center">
-              <span class="cursor-pointer font-medium text-blue-600 hover:text-blue-800"
-                    onclick="flipField($table,'active',<?= $item->id ?>)"
-                    id="active_<?= $item->id ?>">
-                <?= $item->active ? 'Y' : 'N' ?>
-              </span>
-            </td>
-
-            <td class="px-4 py-3 text-center">
-<?php
-                actionButtons([
-                    'module' => $table,
-                    'id' => $item->id,
-                    'targets' => [
-                        'edit'  => $form,
-                    ]
-                ]);
-?>
-            </td>
-            <td class="px-4 py-3 text-center">
-<?php
-                actionButtons([
-                    'module' => $table,
-                    'id' => $item->id,
-                    'targets' => [
-                        'delete'  => $list,
-                    ]
-                ]);
-?>
-            </td>
-          </tr>
-<?php
-$i++;
-    endwhile;
-else:
-?>
-          <tr>
-            <td colspan="6" class="px-4 py-6 text-center text-gray-500">No items currently in system</td>
-          </tr>
-<?php endif; ?>
+          <?php if ($data->num_rows > 0): ?>
+            <?php while ($row = $data->fetch_object()): ?>
+              <tr class="hover:bg-gray-50 transition text-zinc-900">
+                <?php foreach ($config['columns'] as $col): ?>
+                  <td class="px-4 py-3 <?= $col['center'] ?? false ? 'text-center' : '' ?>">
+                    <?php match($col['type']) {
+                      'counter'   => print($i),
+                      'text'      => print(stripslashes($row->{$col['field']} ?? '')),
+                      'editfield' => createEditField($table, $col['field'], $col['mode'] ?? 'pn', $row->id, stripslashes($row->{$col['field']} ?? ''), $col['width'] ?? '200px'),
+                      'flip'      => print("<span class='cursor-pointer font-medium text-blue-600 hover:text-blue-800'
+                                            onclick=\"flipField('{$table}','{$col['field']}',{$row->id})\"
+                                            id=\"{$col['field']}_{$row->id}\">
+                                            " . ($row->{$col['field']} ? 'Y' : 'N') . "
+                                           </span>"),
+                      'action'    => actionButtons([
+                                        'module'  => $table,
+                                        'id'      => $row->id,
+                                        'targets' => [$col['target'] => $col['target'] === 'edit' ? $config['form'] : $config['list']],
+                                     ]),
+                      default     => null
+                    }; ?>
+                  </td>
+                <?php endforeach; ?>
+              </tr>
+              <?php $i++; ?>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <tr>
+              <td colspan="<?= $config['colspan'] ?? count($config['headers']) ?>" class="px-4 py-6 text-center text-gray-500">
+                No items found
+              </td>
+            </tr>
+          <?php endif; ?>
         </tbody>
       </table>
     </div>
-  </div>
-
-<div id="flagpanel"></div>
-<?php
+    <div id="flagpanel"></div>
+    <?php
     return ob_get_clean();
 }
-
-function buildProductTable($products) {
-    ob_start();
-    ?>
-
-<div>
-    <div class="overflow-x-auto">
-      <table id="table-1" class="min-w-full text-sm text-left border-collapse text-zinc-900">
-        <thead class="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
-          <tr>
-            <th class="px-4 py-3">Row</th>
-            <th class="px-4 py-3">Title</th>
-            <th class="px-4 py-3">Slug</th>
-            <th class="px-4 py-3 text-center">Active</th>
-            <th class="px-4 py-3 text-center">View/Edit</th>
-            <th class="px-4 py-3 text-center">Delete</th>
-          </tr>
-        </thead>
-
-        <tbody class="divide-y divide-gray-200">
-<?php
-$i=1;
-if ($products->num_rows):
-    while ($product = $products->fetch_object()):
-        $cat = getRecord('categories', 'id', $product->cat_id);
-?>
-          <tr class="hover:bg-gray-50 transition text-zinc-900">
-            <td class="px-4 py-3">
-              <?= $i ?>
-            </td>
-            <td class="px-4 py-3">
-              <?php createEditField('products', 'title', 'pn', $product->id, stripslashes($product->title), '200px'); ?>
-            </td><td class="px-4 py-3">
-              <?php echo stripslashes($product->slug); ?>
-            </td>
-
-            <td class="px-4 py-3 text-center">
-              <span class="cursor-pointer font-medium text-blue-600 hover:text-blue-800"
-                    onclick="flipField('products','active',<?= $product->id ?>)"
-                    id="active_<?= $product->id ?>">
-                <?= $product->active ? 'Y' : 'N' ?>
-              </span>
-            </td>
-
-            <td class="px-4 py-3 text-center">
-<?php
-                actionButtons([
-                    'module' => 'products',
-                    'id' => $product->id,
-                    'targets' => [
-                        'edit'  => 'prodform',
-                    ]
-                ]);
-?>
-            </td>
-            <td class="px-4 py-3 text-center">
-<?php
-                actionButtons([
-                    'module' => 'products',
-                    'id' => $product->id,
-                    'targets' => [
-                        'delete'  => 'prodlist',
-                    ]
-                ]);
-?>
-            </td>
-          </tr>
-<?php
-$i++;
-    endwhile;
-else:
-?>
-          <tr>
-            <td colspan="6" class="px-4 py-6 text-center text-gray-500">No items currently in system</td>
-          </tr>
-<?php endif; ?>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-<div id="flagpanel"></div>
-<?php
-    return ob_get_clean();
-}
-
 function render(string $view, array $data = []): void
 {
     extract($data, EXTR_SKIP);
@@ -1267,3 +1172,84 @@ function cleanupOrphanImages(mysqli $db, bool $dryRun = false): array
 //     }
 //     return $blocks;
 // }
+
+/**
+ * Build a paginated list result with optional filtering.
+ *
+ * @param array $config {
+ *   table        string   Required. DB table name.
+ *   search_fields array   Columns to match against search term (OR'd together).
+ *   order        string   ORDER BY clause. Default: 'ORDER BY id DESC'.
+ *   per_page     int      Rows per page. Default: PER_PAGE constant.
+ *   extra_where  string   Any extra WHERE conditions (e.g. 'AND active=1').
+ * }
+ * @return array { items, pageinfo, search, page }
+ */
+
+function buildListQuery(array $config): array
+{
+    global $db;
+
+    $table        = $config['table'];
+    $searchFields = $config['search_fields'] ?? [];
+    $order        = $config['order']         ?? 'ORDER BY id DESC';
+    $perPage      = $config['per_page']      ?? PER_PAGE;
+    $extraWhere   = $config['extra_where']   ?? '';
+    $drillId      = $config['drill_id']      ?? 0;
+    $drillField   = $config['drill_field']   ?? '';
+
+    $page   = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+    $offset = ($page - 1) * $perPage;
+    $search = trim($_GET['val'] ?? '');
+
+
+    if ($drillId > 0 && $drillField) {
+        $items     = getListDrillDown($drillId, $table, $drillField, $order, $offset, $perPage);
+        $cats      = rtrim(getCategories($drillId), ',');
+        $totalRows = $db->query("SELECT COUNT(*) as total FROM `$table` WHERE `$drillField` IN ($cats)")->fetch_object()->total ?? 0;
+    } else {
+        $where  = '';
+        $params = [];
+        $types  = '';
+
+        if ($search !== '' && !empty($searchFields)) {
+            $clauses = array_map(fn($col) => "$col LIKE ?", $searchFields);
+            $where   = 'WHERE (' . implode(' OR ', $clauses) . ')';
+            $like    = "%$search%";
+            foreach ($searchFields as $_) {
+                $params[] = $like;
+                $types   .= 's';
+            }
+            if ($extraWhere) $where .= " $extraWhere";
+        } elseif ($extraWhere) {
+            $where = 'WHERE ' . ltrim($extraWhere, 'AND ');
+        }
+
+        $countStmt = $db->prepare("SELECT COUNT(*) as total FROM `$table` $where");
+        if ($params) $countStmt->bind_param($types, ...$params);
+        $countStmt->execute();
+        $totalRows = $countStmt->get_result()->fetch_object()->total ?? 0;
+
+        $dataStmt = $db->prepare("SELECT * FROM `$table` $where $order LIMIT ?, ?");
+        $dataStmt->bind_param($types . 'ii', ...[...$params, $offset, $perPage]);
+        $dataStmt->execute();
+        $items = $dataStmt->get_result();
+        // $items = $dataStmt->get_result()->fetch_all(MYSQLI_ASSOC); // Just for reference how to convert to ASSOC!
+    }
+
+    error_log("buildListQuery: table=$table search=$search fields=" . implode(',', $searchFields));
+    error_log("buildListQuery: where=$where params=" . implode(',', $params));
+    error_log("buildListQuery: totalRows=$totalRows itemCount=" . $items->num_rows);
+
+    return [
+        'items'    => $items,
+        'search'   => $search,
+        'page'     => $page,
+        'pageinfo' => [
+            'records' => $totalRows,
+            'page'    => $page,
+            'pages'   => (int) ceil($totalRows / $perPage),
+            'offset'  => $offset,
+        ],
+    ];
+}

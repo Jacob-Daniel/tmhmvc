@@ -1,38 +1,24 @@
 <?php
-$fld = $_GET['fld'] ?? 'slug';
-$val = isset($_GET['val']) ? urldecode($_GET['val']) : '';
+header('Cache-Control: no-store, no-cache, must-revalidate');
+$fld   = $_GET['fld']   ?? 'slug';
+$val   = isset($_GET['val']) ? urldecode($_GET['val']) : '';
 $table = $_GET['table'] ?? 'products';
-$perPage = PER_PAGE;
-$page = max(1, (int)($_GET['page'] ?? 1));
-$offset = ($page - 1) * $perPage;
+$tableConfigs = require APP_PATH . '/shared/table_configs.php';
+$page  = max(1, (int)($_GET['page'] ?? 1));
+$offset = ($page - 1) * PER_PAGE;
 
-$allowedFields = ['slug', 'title', 'cat_id'];
-if (!in_array($fld, $allowedFields, true)) {
-    die("Invalid search field");
-}
+if (!isset($tableConfigs[$table])) die("Invalid table");
 
-$params = [];
-$types = "";
-$sql = "SELECT * FROM $table";
+$config = $tableConfigs[$table];
 
-if ($val !== '') {
-    $sql .= " WHERE $fld LIKE ?";
-    $params[] = '%' . $val . '%';
-    $types .= "s";
-}
+if (!in_array($fld, $config['fields'], true)) die("Invalid field");
 
-$sql .= " ORDER BY id DESC LIMIT ? OFFSET ?";
-$params[] = $perPage;
-$params[] = $offset;
-$types .= "ii";
+$result = buildListQuery([
+    'table'         => $table,
+    'search_fields' => [$fld],
+    'order'         => 'ORDER BY id DESC',
+]);
 
-$stmt = $db->prepare($sql);
-if ($stmt === false) die("Prepare failed: " . $db->error);
+error_log("getlist returning: " . $result['items']->num_rows . " rows");
 
-$stmt->bind_param($types, ...$params);
-
-$stmt->execute();
-$products = $stmt->get_result();
-$stmt->close();
-
-echo buildProductTable($products);
+echo buildTable($result['items'], $config);
