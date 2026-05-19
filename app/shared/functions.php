@@ -1368,39 +1368,41 @@ function refreshGoogleAccessToken(mysqli $db, $tokenId = 1)
     $client->setClientSecret(GOOGLEAPI_CLIENT_SECRET);
     $client->setAccessType('offline');
     
-    try {
-        // This happens server-to-server, no browser needed!
-        $client->fetchAccessTokenWithRefreshToken($refreshToken);
-        $newToken = $client->getAccessToken();
+	try {
+	    $tokenResponse = $client->fetchAccessTokenWithRefreshToken($refreshToken);
+	    
+	    // fetchAccessTokenWithRefreshToken returns the token array directly
+	    // AND sets it internally — check the RETURN VALUE, not getAccessToken()
+	    if (empty($tokenResponse) || isset($tokenResponse['error'])) {
+	        $errDetail = $tokenResponse['error_description'] 
+	                  ?? $tokenResponse['error'] 
+	                  ?? 'empty response';
+	        error_log("Token refresh error from Google: " . $errDetail);
+	        $_SESSION['refresh_message'] = '<div class="alert alert-danger">
+	            <p>Failed: ' . htmlspecialchars($errDetail) . '</p>
+	          </div>';
+	        return false;
+	    }
 
-		if (empty($newToken) || isset($newToken['error'])) {
-		    $errDetail = $newToken['error_description'] ?? $newToken['error'] ?? 'unknown';
-		    error_log("Token refresh returned error: " . $errDetail);
-		    $_SESSION['refresh_message'] = '<div class="alert alert-danger"><p>Failed: ' . htmlspecialchars($errDetail) . '</p></div>';
-		    return false;
-		}        
-        
-        $accessToken = $newToken['access_token'];
-        $expiresAt = time() + $newToken['expires_in'];
-        
-        $updateStmt = $db->prepare("UPDATE oauth_tokens SET access_token = ?, expires_at = ? WHERE id = ?");
-        $updateStmt->bind_param("sii", $accessToken, $expiresAt, $tokenId);
-        $updateStmt->execute();
+	    // Use the returned array directly — not getAccessToken()
+	    $accessToken = $tokenResponse['access_token'];
+	    $expiresAt   = time() + $tokenResponse['expires_in'];
 
-        $message = '<div class="alert alert-success">
-            <p>✓ Google token refreshed successfully!</p>
-          </div>';
-        
-        $_SESSION['refresh_message'] = $message;
+	    $updateStmt = $db->prepare("UPDATE oauth_tokens SET access_token = ?, expires_at = ? WHERE id = ?");
+	    $updateStmt->bind_param("sii", $accessToken, $expiresAt, $tokenId);
+	    $updateStmt->execute();
 
-        return $accessToken;
-    } catch (Exception $e) {
-        $message = '<div class="alert alert-danger">
-            <p>Failed to refresh Google token!</p>
-          </div>';
-        
-        $_SESSION['refresh_message'] = $message;
-        error_log("Failed to refresh Google token: " . $e->getMessage());
-        return false;
-    }
+	    $_SESSION['refresh_message'] = '<div class="alert alert-success">
+	        <p>✓ Google token refreshed successfully!</p>
+	      </div>';
+
+	    return $accessToken;
+
+	} catch (Exception $e) {
+	    error_log("Exception refreshing Google token: " . $e->getMessage());
+	    $_SESSION['refresh_message'] = '<div class="alert alert-danger">
+	        <p>Failed to refresh Google token: ' . htmlspecialchars($e->getMessage()) . '</p>
+	      </div>';
+	    return false;
+	}
 }
