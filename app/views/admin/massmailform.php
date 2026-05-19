@@ -48,7 +48,7 @@ if ($remainingToSend > 0): ?>
 <?php endif; ?>
 
 <form
-    action="/admin/api/sendmassmail"
+    action="/admin/api/savemassmail"
     method="post"
     data-ajax
     id="massmailform"
