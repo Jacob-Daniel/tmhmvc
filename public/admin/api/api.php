@@ -63,6 +63,7 @@ $allowed = [
     'tinymceupload',
     'update_password',
     'savemassmail',
+    'sendmail',
     'massmailform',
     'apievents',
     'savemassmail',
