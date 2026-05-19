@@ -65,10 +65,10 @@ function saveOccurrence(array $data, bool $isCanonical, string $canonicalSlug): 
     return (bool)$db->query($sql);
 }
 
-// --- EDIT existing record ---
 if ($isEdit) {
-    // Your existing saveform.php generic UPDATE handles this fine
-    // Just ensure canonical_slug is preserved and not overwritten
+    //Pre-Process data fields
+    $_POST['start_date'] = (string)(int)strtotime($startDateRaw . ' ' . $startTime);
+    $_POST['end_date']   = (string)(int)strtotime($endDateRaw   . ' ' . $endTime);
     require __DIR__ . '/saveform.php';
     exit;
 }

@@ -1,15 +1,9 @@
 <?php
 declare(strict_types=1);
-print_r($_SESSION);
-// if (filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) === -1) {
-//     unset(
-//         $_SESSION['srch_fld'],
-//         $_SESSION['srch_val'],
-//         $_SESSION['image_item']
-//     );
-//     header('Location: /admin/index.php?action=gallery');
-//     exit;
-// }
+if (filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) === -1) {
+    header('Location: /admin/index.php?action=gallery');
+    exit;
+}
 
 $condition = filter_input(INPUT_GET, 'condition', FILTER_SANITIZE_SPECIAL_CHARS) ?? '';
 $page = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
@@ -34,10 +28,9 @@ if (!empty($condition) && strlen($condition) >= 2) {
     $images = $stmt->get_result();
 
 } else {
-
-$images = getList('images', "ORDER BY title ASC LIMIT $offset," . PER_PAGE);
-
+    $images = getList('images', "ORDER BY title ASC LIMIT $offset," . PER_PAGE);
 }
+
 $pageinfo = setupPaging('images', PER_PAGE);
 
 render('gallery', [

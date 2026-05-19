@@ -15,7 +15,7 @@
             data-table="pages"
             data-field="title"
             data-target="restable"
-            placeholder="Search Title"
+            placeholder="Search"
             class="flex-1 min-w-[200px] px-3 py-1.5 border rounded-md text-sm focus:ring-2"
         /> 
 
