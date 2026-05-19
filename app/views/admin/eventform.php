@@ -38,7 +38,7 @@
             <div class="flex flex-col gap-1">
                 <label class="text-sm font-medium">Summary</label>
                 <textarea name="summary"
-                          class="mce-basic border rounded px-3 py-2 text-sm"
+                          class="border rounded px-3 py-2 text-sm"
                           rows="2"><?= htmlspecialchars(stripslashes($summary), ENT_QUOTES) ?></textarea>
             </div>
 
