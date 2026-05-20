@@ -32,14 +32,14 @@ if ($from === '' || !filter_var($from, FILTER_VALIDATE_EMAIL)) {
 }
 
 // ── Email template ────────────────────────────────────────────────────────────
-$emailRec = getRow('emails', ['id', 'em_name'], 'WHERE id = ?', [$emailId]);
+$emailRec = getRecord('emails','id',$emailId);
 
 if (!$emailRec) {
     echo json_encode(['success' => false, 'error' => 'Email template not found.']);
     exit;
 }
 
-$emName = $emailRec['em_name'];
+$emName = $emailRec->em_name;
 
 // ── Members in group ──────────────────────────────────────────────────────────
 $members = getListWhere(
