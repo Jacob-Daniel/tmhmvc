@@ -286,7 +286,7 @@ function replacePlaceholders(string $body, string $emailto, object $config): str
         $parts    = explode('_', trim($v, '{}'));
         $event    = getRecord('events', 'id', $parts[1]);
         $cat      = getRecord('categories', 'id', $parts[2]);
-        $eventurl = NEXTJS_BASE_URL . 'whats-on/' . $cat->cat_name . '/' . $event->slug;
+        $eventurl = NEXTJS_BASE_URL . 'whats-on/' . $cat->slug . '/' . $event->slug;
         $html     = '<div style="margin-bottom:10px; padding:10px 0px; border-bottom:1px solid gainsboro;">'
                   . '<a href="' . $eventurl . '">' . $event->title . '</a><br />'
                   . '<img style="padding:10px 0px" height="400" width="400" src="' . BASE_URL_IMG_DIR . $event->imagepath . '"><br />'
@@ -300,7 +300,7 @@ function replacePlaceholders(string $body, string $emailto, object $config): str
     foreach ($pageplaceholders[0] as $v) {
         $parts  = explode('_', trim($v, '{}'));
         $page   = getRecord('pages', 'id', $parts[1]);
-        $body   = str_replace($v, '<a href="' . NEXTJS_BASE_URL . $page->pagename . '">' . $page->title . '</a>', $body);
+        $body   = str_replace($v, '<a href="' . NEXTJS_BASE_URL . $page->slug . '">' . $page->title . '</a>', $body);
     }
 
     $body = str_replace('{EMAIL}',    $emailto,          $body);
