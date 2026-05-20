@@ -85,14 +85,16 @@ function handleGoogleOAuthTokenFlow(mysqli $db)
     $stmt->bind_param("ssi", $accessToken, $refresh_token, $expiresAt);
 
     if (!$stmt->execute()) {
-        echo "Error saving token: " . $stmt->error;
+        $_SESSION['access_grant'] = false;
+        $_SESSION['access_grant_message'] = "Error saving token: " . $stmt->error;
+        header('Location: /admin/index.php');        
         exit;
     }
 
     $stmt->close();
-
-    echo "Success!";
-
+    $_SESSION['access_grant'] = true;    
+    $_SESSION['access_grant_message'] = 'Google access granted successfully.';
+    header('Location: /admin/index.php');
     exit;
 }
 

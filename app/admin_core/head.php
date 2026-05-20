@@ -7,6 +7,7 @@
 <meta http-equiv="Cache-Control" content="no-store" />
 <?php require_once __DIR__ . "/scripts.php"; ?>
 </head>
-<body>
+<body data-flash-message="<?= htmlspecialchars($_SESSION['access_grant_message'] ?? '', ENT_QUOTES) ?>"
+      data-flash-type="<?= $_SESSION['access_grant'] ?? null === true ? 'success' : 'error' ?>">
 	<div class="px-20 flex flex-col gap-y-10 pb-10">
 

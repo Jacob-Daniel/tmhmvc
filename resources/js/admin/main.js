@@ -1,7 +1,8 @@
 import "../../css/admin/main.css";
+import { showToast } from "./components/uiMessages";
 import { initImageModal, openImageModal } from "./components/imageModalNew.ts";
 import { showMessage } from "./components/uiMessages";
-import flatpickr from "flatpickr";
+// import flatpickr from "flatpickr";
 import { initGallery } from "./components/gallery";
 import { setActiveMenu } from "./components/setActiveMenu";
 import { initForm } from "./components/form";
@@ -147,6 +148,12 @@ function initPageJS(action, params = {}) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+    const body = document.body;
+    const flashMsg = body.dataset.flashMessage;
+    const flashType = body.dataset.flashType;
+    if (flashMsg) {
+        showToast(flashMsg, flashType);
+    }
     await loadMenu();
     initRouter();
     initActionDelegates();

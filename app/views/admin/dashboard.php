@@ -69,5 +69,39 @@
         </div>
 
     </div>
+    <?php if(isset($_SESSION['access_grant'])) : ?>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <?php if($_SESSION['access_grant']): ?>
+                <div class="border border-green-200 bg-green-50 rounded-lg p-4 relative">
+                    <p class="font-semibold text-green-700 mb-2">✔ Google API</p>
+                    <p class="text-sm text-green-800">
+                        <?= htmlspecialchars($_SESSION['access_grant_message']) ?>
+                    </p>
+                    <div class="absolute top-2 right-2">                        
+                        <span class="relative flex size-3">
+                          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
+                          <span class="relative inline-flex size-3 rounded-full bg-green-500"></span>
+                        </span>
+                    </div>
+                </div>
+
+            <?php else :?>
+                <div class="border border-red-200 bg-red-50 rounded-lg p-4 relative">
+                    <p class="font-semibold text-red-700 mb-2">⚠ Google API</p>
+                    <p class="text-sm text-amber-800">
+                        <?= htmlspecialchars($_SESSION['access_grant_message']) ?>
+                    </p>
+                    <div class="absolute top-2 right-2">                        
+                        <span class="relative flex size-3">
+                          <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
+                          <span class="relative inline-flex size-3 rounded-full bg-red-500"></span>
+                        </span>  
+                    </div>              
+                </div>
+            <?php endif; ?>
+        </div>  
+
+    <?php unset($_SESSION['access_grant'], $_SESSION['access_grant_message']); endif; ?>
 
 </div>
