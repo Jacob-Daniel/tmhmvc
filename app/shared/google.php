@@ -14,7 +14,7 @@ function getGoogleOAuthUrl(): string {
 
 function handleGoogleOAuthTokenFlow(mysqli $db)
 {
-    require_once __DIR__ . '/../vendor/autoload.php';
+    require_once __DIR__ . '/../../vendor/autoload.php';
 
     $client = new Google_Client();
     $client->setClientId(GOOGLEAPI_CLIENT_ID);
@@ -98,7 +98,7 @@ function handleGoogleOAuthTokenFlow(mysqli $db)
 
 function refreshGoogleAccessToken(mysqli $db, $tokenId = 1)
 {
-    require_once __DIR__ . '/../vendor/autoload.php';
+    require_once __DIR__ . '/../../vendor/autoload.php';
 
     $query = "SELECT refresh_token FROM oauth_tokens WHERE id = ?";
     $stmt = $db->prepare($query);
