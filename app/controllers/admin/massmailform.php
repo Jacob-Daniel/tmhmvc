@@ -66,7 +66,7 @@ $authUrl      = function_exists('getGoogleOAuthUrl') ? getGoogleOAuthUrl() : '#'
 $tokenStatus  = 'missing';
 $tokenExpires = null;
 
-if ($oauthToken && $oauthToken->id) {
+if ($oauthToken && $oauthToken->id && !empty($oauthToken->access_token)) {
     $tokenExpires = (int) $oauthToken->expires_at;
     if (time() >= $tokenExpires - $TOKEN_WARN_SECONDS) {
         $tokenStatus = 'expiring';
