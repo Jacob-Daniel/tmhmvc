@@ -161,9 +161,10 @@ function sendGsuite(
     $subject, 
     $from, 
     $mailtype, 
-    string $token
+    string $token,
+    object $config,
 ): bool {
-    global $db, $config;
+    global $db;
 
     // Resolve recipient
     $emailto = '';

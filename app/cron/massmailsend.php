@@ -23,6 +23,12 @@ ini_set('error_log', dirname(__DIR__, 2) . '/storage/logs/massmailsend.log');
 // ── Config ───────────────────────────────────────────────────────────────────
 const MAX_EMAILS_PER_DAY = 500;
 const TOKEN_BUFFER        = 3600; // refresh if < 60 min remaining
+$config = getRecord('config', 'id', 1);
+
+if (!$config) {
+    error_log("massmailsend: config not found. Exiting.");
+    exit;
+}
 
 // ── Daily send count ─────────────────────────────────────────────────────────
 $result    = $db->query(
@@ -132,7 +138,8 @@ while ($m = $mlist->fetch_object()) {
         $m->m_subj,
         GOOGLE_MAIL_FROM,
         'm',
-        $accessToken
+        $accessToken,
+        $config
     );
 
     if ($sent) {
