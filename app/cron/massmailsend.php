@@ -2,7 +2,7 @@
 /**
  * Mass Mail Send — Cron Job
  * Run via:  php /path/to/app/cron/massmailsend.php
- * Suggested crontab:  * * * * * php /var/www/app/cron/massmailsend.php >> /var/log/massmail.log 2>&1
+ * crontab:  * * * * * php /var/www/app/cron/massmailsend.php >> /var/log/massmail.log 2>&1
  */
 declare(strict_types=1);
 
@@ -14,6 +14,7 @@ if (PHP_SAPI !== 'cli') {
 
 require_once dirname(__DIR__) . '/bootstrap/app.php';
 require_once dirname(__DIR__) . '/shared/functions.php';
+require_once dirname(__DIR__) . '/shared/google.php';
 require_once dirname(__DIR__, 2) . '/vendor/autoload.php';
 
 ini_set('log_errors',  '1');
