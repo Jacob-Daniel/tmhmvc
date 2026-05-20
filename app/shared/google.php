@@ -153,3 +153,157 @@ function refreshGoogleAccessToken(mysqli $db, $tokenId = 1)
         return false;
     }
 }
+
+function sendGsuite(
+    $template, 
+    $mailid, 
+    $memberid, 
+    $subject, 
+    $from, 
+    $mailtype, 
+    string $token
+): bool {
+    global $db, $config;
+
+    // Resolve recipient
+    $emailto = '';
+    $toname  = '';
+
+    if ($mailtype === 'm') {
+        $member = getRecord('members', 'id', $memberid);
+        if (!$member || empty($member->email)) {
+            error_log("sendGsuite: member {$memberid} not found or has no email.");
+            return false;
+        }
+        $nsdoms  = [];
+        $parts   = explode('@', $member->email);
+        if (in_array($parts[1] ?? '', $nsdoms)) {
+            error_log("sendGsuite: domain barred for member {$memberid}.");
+            return false;
+        }
+        $emailto = $member->email;
+        $toname  = $member->email;
+    }
+
+    if (empty($emailto)) {
+        error_log("sendGsuite: no recipient resolved.");
+        return false;
+    }
+
+    // Build body
+    $body = '';
+    if (is_numeric($template)) {
+        $mrec = getRecord('emails', 'id', $template);
+        if (!$mrec) {
+            error_log("sendGsuite: template {$template} not found.");
+            return false;
+        }
+        $body = buildEmailBody($mrec, $config, $emailto);
+    } else {
+        $body = $template;
+    }
+
+    // Replace placeholders
+    $body = replacePlaceholders($body, $emailto, $config);
+
+    // Send
+    $client = GoogleApiClientFactory::getClient($token);
+    $gmail  = new Google_Service_Gmail($client);
+
+    $rawMessage  = "From: {$from}\r\n";
+    $rawMessage .= "To: {$toname} <{$emailto}>\r\n";
+    $rawMessage .= 'Subject: =?utf-8?B?' . base64_encode($subject) . "?=\r\n";
+    $rawMessage .= "MIME-Version: 1.0\r\n";
+    $rawMessage .= "Return-Path: {$from}\r\n";
+    $rawMessage .= "Content-Type: text/html; charset=utf-8\r\n";
+    $rawMessage .= "Content-Transfer-Encoding: quoted-printable\r\n\r\n";
+    $rawMessage .= quoted_printable_encode($body) . "\r\n";
+
+    $mime    = rtrim(strtr(base64_encode($rawMessage), '+/', '-_'), '=');
+    $message = new Google_Service_Gmail_Message();
+    $message->setRaw($mime);
+
+    try {
+        $result = $gmail->users_messages->send('me', $message);
+        error_log("sendGsuite: sent to {$emailto}, thread {$result->threadId}");
+        return true;
+    } catch (Exception $e) {
+        error_log("sendGsuite: failed for {$emailto}: " . $e->getMessage());
+        return false;
+    }
+}
+
+function buildEmailBody(object $mrec, object $config, string $emailto): string
+{
+    $usuburl = NEXTJS_BASE_URL . 'unsubscribe';
+  $footer  = '<div style="padding:10px; font-size:14px; background-color:#6f866a;">';
+        $footer .= '<ul style="margin:0px 0px 15px 0px; padding:0px; list-style:none;">';
+        $footer .= '<li><b>' . $config->comp_name . '</b><br />';
+        $footer .= $config->address . '<br />';
+        $footer .= $config->postcode . '<br />';
+        $footer .= $config->tel . '<br />';
+        $footer .= '<a style="display:block; color:black;" href="' . NEXTJS_BASE_URL . '">' . $config->domain . '</a><br />';
+        $footer .= '</li>';
+        $footer .= '<li style="margin:0px; padding:0px;">';
+        $footer .= '<b>Shop</b>';
+        $footer .= '<a style="display:block; color:black; margin-bottom:5px;" href="https://hearingeye.org">Hearing Eye</a>';
+        $footer .= '</li>';
+        $footer .= '<li>';
+        $footer .= '<b>Support</b>';
+        $footer .= '<a style="display:block; color:black;" href="' . NEXTJS_BASE_URL . 'support">Support</a>';
+        $footer .= '</li>';
+        $footer .= '</ul>';
+        $footer .= '<ul style="margin:0px 0px 15px 0px; padding:0px; list-style:none;">';
+        $footer .= '<li>';
+        $footer .= '<a style="display:block; color:black;" href="' . $config->fb_url . '">Facebook</a>';
+        $footer .= '</li>';
+        $footer .= '<li>';
+        $footer .= '<a style="display:block; color:black;" href="' . $config->inst_url . '">Instagram</a>';
+        $footer .= '</li>';
+        $footer .= '<li>';
+        $footer .= '<a style="color:black;" href="' . $usuburl . '">Unsubscribe</a>';
+        $footer .= '</li>';
+        $footer .= '</ul>';
+        $footer .= '</div>';
+        $body = '<div style="border:1px solid gainsboro; margin:0px 30px; max-width: 650px;">';
+        $body .= '<div style="font-size:14px; padding: 15px;">'; 
+        $body .= '<div style="margin-bottom:20px;"><img width="150" height="42" alt="' . $config->comp_name . '" src="' . BASE_URL_IMG_DIR . $config->imagepath . '"></div>';        
+        $body .= '<h1 style="color:#e84c23;">' . $mrec->em_name . '</h1>';  // add main template body
+        $body .= $mrec->em_body;  // add main template body
+        $body .= '</div>';
+        $body .= $footer;  // any master footer controlled by admin
+        $body .= '</div>';
+    return $body;
+}
+
+function replacePlaceholders(string $body, string $emailto, object $config): string
+{
+    // EVENT placeholders
+    $pattern = '/\{EVENT_\d+_\d+\}/';
+    preg_match_all($pattern, $body, $eventplaceholders);
+    foreach ($eventplaceholders[0] as $v) {
+        $parts    = explode('_', trim($v, '{}'));
+        $event    = getRecord('events', 'id', $parts[1]);
+        $cat      = getRecord('categories', 'id', $parts[2]);
+        $eventurl = NEXTJS_BASE_URL . 'whats-on/' . $cat->cat_name . '/' . $event->slug;
+        $html     = '<div style="margin-bottom:10px; padding:10px 0px; border-bottom:1px solid gainsboro;">'
+                  . '<a href="' . $eventurl . '">' . $event->title . '</a><br />'
+                  . '<img style="padding:10px 0px" height="400" width="400" src="' . BASE_URL_IMG_DIR . $event->imagepath . '"><br />'
+                  . $event->summary . '<br/><br/>'
+                  . '</div>';
+        $body = str_replace($v, $html, $body);
+    }
+
+    // PAGE placeholders
+    preg_match_all('/\{PAGE_\d+\}/', $body, $pageplaceholders);
+    foreach ($pageplaceholders[0] as $v) {
+        $parts  = explode('_', trim($v, '{}'));
+        $page   = getRecord('pages', 'id', $parts[1]);
+        $body   = str_replace($v, '<a href="' . NEXTJS_BASE_URL . $page->pagename . '">' . $page->title . '</a>', $body);
+    }
+
+    $body = str_replace('{EMAIL}',    $emailto,          $body);
+    $body = str_replace('{COMPNAME}', $config->comp_name, $body);
+
+    return $body;
+}
