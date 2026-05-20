@@ -15,9 +15,9 @@
     </button>
 
     <button 
-        data-route="prodform"
+        data-route="eventform"
         class="admin-action p-4 border rounded-lg hover:bg-gray-50 hover:shadow-sm transition-all duration-150">
-        <p class="font-semibold">Create Work Item</p>
+        <p class="font-semibold">Create Event Item</p>
         <p class="text-sm text-gray-500">Add a new project</p>
     </button>
 

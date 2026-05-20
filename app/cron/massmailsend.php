@@ -130,7 +130,7 @@ while ($m = $mlist->fetch_object()) {
         $m->list_id,
         $m->member_id,
         $m->m_subj,
-        $m->m_from,
+        GOOGLE_MAIL_FROM,
         'm',
         $accessToken
     );
