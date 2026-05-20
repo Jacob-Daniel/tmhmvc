@@ -10,12 +10,9 @@ export function initList() {
         );
         if (!searchInput || !restab) return;
 
-        const table = encodeURIComponent(
-            searchInput.dataset.table || "products",
-        );
+        const table = encodeURIComponent(searchInput.dataset.table || "events");
         const field = encodeURIComponent(searchInput.dataset.field || "slug");
         const val = searchInput.value.trim();
-
         if (val.length > 0 && val.length < 3) return;
 
         const url = `/admin/api/getlist?table=${table}&fld=${field}&val=${encodeURIComponent(val)}&_=${Date.now()}`;

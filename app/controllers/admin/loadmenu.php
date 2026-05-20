@@ -7,7 +7,8 @@
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="catlist">Categories</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="navlist">Navigation</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="emaillist">Emails</li>';
-	echo '<li class="nav-item cursor-pointer text-sm" data-route="memberlist">Email Groups</li>';
+	echo '<li class="nav-item cursor-pointer text-sm" data-route="emailgrouplist">Email Groups</li>';
+	echo '<li class="nav-item cursor-pointer text-sm" data-route="memberlist">Subscribers</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="massmailform">Send Email</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="userform">User</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="apitokenform">API Token</li>';

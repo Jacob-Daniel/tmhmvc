@@ -4,6 +4,8 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 
 if (isset($_POST['password']) && $_POST['password'] !== '') {
+    // error_log("DEBUG POST=============: $_POST");
+    // print_r($_POST);
     $password = trim($_POST['password']);
     $confirm = trim($_POST['password_confirm']);
 
@@ -104,7 +106,7 @@ function ensureUniqueSlug(
 $table   = $_POST['table'] ?? '';
 $id      = isset($_POST['edit']) ? (int)$_POST['edit'] : null;
 $idField = $_POST['idfield'] ?? 'id';
-// error_log("DEBUG TABLE: $table");
+// error_log("DEBUG POST: $_POST");
 
 if (!$table) {
     exit('Invalid table');
@@ -181,8 +183,7 @@ if ($slugField !== null) {
 | Insert or Update
 |--------------------------------------------------------------------------
 */
-
-if (isset($_POST['has_active_field'])) {
+if (isset($_POST['has_active_field']) && isset($columns['active'])) {
     $data['active'] = isset($_POST['active']) ? 1 : 0;
 }
 

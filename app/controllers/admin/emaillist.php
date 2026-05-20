@@ -1,23 +1,15 @@
 <?php
 declare(strict_types=1);
+$tableConfigs = require APP_PATH . '/shared/table_configs.php';
+$config       = $tableConfigs['emails'];
 
-$delId = filter_input(INPUT_GET, 'delitem', FILTER_VALIDATE_INT);
-$page  = filter_input(INPUT_GET, 'page',    FILTER_VALIDATE_INT) ?: 1;
-
-$_SESSION['page'] = $page;
-
-if ($delId) {
-    $stmt = $db->prepare("DELETE FROM emails WHERE id = ?");
-    $stmt->bind_param('i', $delId);
-    $stmt->execute();
-    $stmt->close();
-}
-
-$emails   = getList('emails', 'ORDER BY id');
-$pageinfo = setupPaging('emails', 40);
-
-render('emaillist', [
-    'emails'   => $emails,
-    'pageinfo' => $pageinfo,
-    'page'     => $page,
+$result   = buildListQuery([
+    'table'         => 'emails',
+    'search_fields' => ['em_name', 'em_body'],
+    'order'         => 'ORDER BY em_name ASC',
 ]);
+
+$emails    = $result['items'];
+$pageinfo = $result['pageinfo'];
+
+require __DIR__ . '/../../views/admin/emaillist.php';

@@ -24,13 +24,14 @@
             class="flex-1 w-[8rem] px-3 py-1.5 border rounded-md text-sm"
            >
   
-        <button
-            type="button"
-            onclick="loadContent('eventform', { id: 0 })"
-            class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 ml-auto"
-        >
-            New Item
-        </button>
+    <?php
+        actionButtons([
+            'module' => 'event',
+            'targets' => [
+                'new' => 'eventform',
+            ]
+        ]);
+    ?>
     </div>
 
     <div id="message" class="mb-2">

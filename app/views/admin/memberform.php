@@ -3,10 +3,10 @@
     method="post"
     enctype="multipart/form-data"
     data-ajax
-    id="emailgroupmemberform"
+    id="memberform"
 >
     <input type="hidden" name="edit"      value="<?= (int)$id ?>">
-    <input type="hidden" name="table"     value="email_group_members">
+    <input type="hidden" name="table"     value="members">
     <input type="hidden" name="idfield"   value="id">
     <input type="hidden" name="item_word" value="Member">
     <input type="hidden" name="group_id"  value="<?= (int)$groupId ?>">
@@ -79,11 +79,11 @@
                     'module'  => 'emailgroupmembers',
                     'id'      => $id,
                     'targets' => [
-                        'save'    => 'emailgroupmemberform',
-                        'back'    => 'emailgroupmembers',
-                        'new'     => 'emailgroupmemberform',
-                        'refresh' => 'emailgroupmemberform',
-                        'delete'  => 'emailgroupmembers',
+                        'save'    => 'memberform',
+                        'back'    => 'memberlist',
+                        'new'     => 'memberform',
+                        'refresh' => 'memberform',
+                        'delete'  => 'memberform',
                     ],
                     'condition' => $groupId,
                 ]); ?>

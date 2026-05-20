@@ -7,8 +7,16 @@
 
     <legend class="font-semibold ms-3">Categories</legend>
 
-    <div id="filter-bar" class="flex justify-end space-x-2 mb-2 p-3">
-
+    <div id="filter-bar" class="flex justify-between space-x-2 mb-2 p-3">
+        <input 
+            type="text" 
+            id="psch" 
+            placeholder="Search" 
+            data-table="categories"
+            data-field="slug"
+            data-target="restable"
+            class="flex-1 w-[8rem] px-3 py-1.5 border rounded-md text-sm"
+           >
     <?php
         actionButtons([
             'module' => 'categories',
@@ -18,104 +26,7 @@
         ]);
     ?>
     </div>
-    <table id="table-1" class="min-w-full text-sm text-left border-collapse text-zinc-900">
-      <thead class="bg-gray-100 text-gray-700 uppercase text-xs tracking-wider">
-        <tr>
-          <th class="px-4 py-3">ID</th>
-          <th class="px-4 py-3">Category</th>
-          <th class="px-4 py-3 text-center">Sequence</th>
-          <th class="px-4 py-3 text-center">Active</th>
-          <th class="px-4 py-3 text-center">View/Edit</th>
-          <th class="px-4 py-3 text-center">Delete</th>
-        </tr>
-      </thead>
-
-      <tbody class="divide-y divide-gray-200">
-<?php
-function renderCategoryRows($categories, $depth = 0)
-{
-    foreach ($categories as $category) {
-
-        $indent = 20 * $depth;
-        $bg = $depth === 0 ? '' : 'bg-gray-' . (50 + ($depth * 50));
-
-?>
-        <tr class="<?= $bg ?> hover:bg-gray-50 transition text-zinc-900">
-
-            <td class="px-4 py-3">
-                <?= $category->id; ?>
-            </td>
-
-            <td class="px-4 py-3" style="padding-left: <?= 16 + $indent ?>px">
-                <?= str_repeat('– ', $depth); ?>
-                <?php createEditField(
-                    'categories',
-                    'title',
-                    'pn',
-                    $category->id,
-                    stripslashes($category->title),
-                    '200px'
-                ); ?>
-            </td>
-
-            <td class="px-4 py-3 text-center">
-                <?php createEditField(
-                    'categories',
-                    'sequence',
-                    'pr',
-                    $category->id,
-                    $category->sequence,
-                    '40px'
-                ); ?>
-            </td>
-
-            <td class="px-4 py-3 text-center">
-                <span class="cursor-pointer font-medium text-blue-600 hover:text-blue-800"
-                      onclick="flipField('categories','active',<?= $category->id ?>)"
-                      id="active_<?= $category->id ?>">
-                    <?= $category->active ? 'Y' : 'N'; ?>
-                </span>
-            </td>
-
-            <td class="px-4 py-3 text-center">
-                <?php
-                actionButtons([
-                    'module' => 'categories',
-                    'id' => $category->id,
-                    'targets' => [
-                        'edit' => 'catform',
-                    ]
-                ]);
-                ?>
-            </td>
-
-            <td class="px-4 py-3 text-center">
-                <?php
-                actionButtons([
-                    'module' => 'categories',
-                    'id' => $category->id,
-                    'targets' => [
-                        'delete' => 'catlist',
-                    ]
-                ]);
-                ?>
-            </td>
-        </tr>
-
-<?php
-        if (!empty($category->children)) {
-            renderCategoryRows($category->children, $depth + 1);
-        }
-    }
-}
-?>
-<?php
-        if (!empty($categories)) {
-            renderCategoryRows($categories);
-        } else {
-            echo '<tr><td colspan="6" class="px-4 py-6 text-center text-gray-500">None found</td></tr>';
-        }
-?>
-      </tbody>
-    </table>
+    <div id="restable" class="overflow-x-auto">
+        <?= buildTable($categories, $config); ?>
+    </div>
 </fieldset>

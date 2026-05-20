@@ -1,15 +1,15 @@
 <?php
 return [
-    'products' => [
-        'table' => 'products',
-        'form'    => 'prodform',
-        'list'    => 'prodlist',
-        'fields'  => ['slug', 'title', 'cat_id'],
-        'headers' => ['Row', 'Title', 'Slug', 'Active', 'View/Edit', 'Delete'],
+    'categories' => [
+        'table' => 'categories',
+        'form'    => 'catform',
+        'list'    => 'catlist',
+        'fields'  => ['slug', 'title'],
+        'headers' => ['Row', 'Category', 'Sequence', 'Active', 'View/Edit', 'Delete'],
         'columns' => [
             ['type' => 'counter'],
             ['type' => 'editfield', 'field' => 'title', 'mode' => 'pn', 'width' => '200px'],
-            ['type' => 'text',      'field' => 'slug', 'width' => '150px'], 
+            ['type' => 'editfield',      'field' => 'sequence'], 
             ['type' => 'flip',      'field' => 'active',  'center' => true],
             ['type' => 'action',    'target' => 'edit',   'center' => true],
             ['type' => 'action',    'target' => 'delete', 'center' => true],
@@ -53,11 +53,51 @@ return [
         'headers' => ['ID', 'Label', 'Slug', 'Active', 'View/Edit', 'Delete'],
         'columns' => [
             ['type' => 'text',      'field' => 'id'],
-            ['type' => 'editfield', 'field' => 'label', 'mode' => 'pn', 'width' => '200px'],
+            ['type' => 'text', 'field' => 'label', 'width' => '200px'],
             ['type' => 'text',      'field' => 'slug', 'width' => '150px'], 
             ['type' => 'flip',      'field' => 'active',  'center' => true],
             ['type' => 'action',    'target' => 'edit',   'center' => true],
             ['type' => 'action',    'target' => 'delete', 'center' => true],
         ],
-    ],    
+    ], 
+   'emails' => [
+        'table'   => 'emails',
+        'form'    => 'emailform',
+        'list'    => 'emaillist',
+        'fields'  => ['em_name', 'em_body'],
+        'headers' => ['ID', 'Name','View/Edit', 'Delete'],
+        'columns' => [
+            ['type' => 'text',      'field' => 'id'],
+            ['type' => 'text',      'field' => 'em_name', 'width' => '350px'],
+            ['type' => 'action',    'target' => 'edit',   'center' => true],
+            ['type' => 'action',    'target' => 'delete', 'center' => true],
+        ],
+    ], 
+   'members' => [
+        'table'   => 'members',
+        'form'    => 'memberform',
+        'list'    => 'memberlist',
+        'fields'  => ['email','group_id'],
+        'headers' => ['ID', 'Email','Group ID','View/Edit', 'Delete'],
+        'columns' => [
+            ['type' => 'text',      'field' => 'id'],
+            ['type' => 'text',      'field' => 'email', 'width' => '250px'],
+            ['type' => 'text',      'field' => 'group_id'],
+            ['type' => 'action',    'target' => 'edit',   'center' => true],
+            ['type' => 'action',    'target' => 'delete', 'center' => true],
+        ],
+    ],  
+    'email_groups' => [
+        'table'   => 'email_groups',
+        'form'    => 'emailgroupform',
+        'list'    => 'emailgrouplist',
+        'fields'  => ['email','group_name'],
+        'headers' => ['ID', 'Name','View/Edit', 'Delete'],
+        'columns' => [
+            ['type' => 'text',      'field' => 'id'],
+            ['type' => 'text',      'field' => 'group_name', 'width' => '350px'],
+            ['type' => 'action',    'target' => 'edit',   'center' => true],
+            ['type' => 'action',    'target' => 'delete', 'center' => true],
+        ],
+    ], 
 ];

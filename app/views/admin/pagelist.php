@@ -19,9 +19,14 @@
             class="flex-1 min-w-[200px] px-3 py-1.5 border rounded-md text-sm focus:ring-2"
         /> 
 
-        <button id="newPageBtn" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 ml-auto">
-            Create New Page
-        </button>
+    <?php
+        actionButtons([
+            'module' => 'pages',
+            'targets' => [
+                'new' => 'pageform',
+            ]
+        ]);
+    ?>
     </div>
     <div id="restable" class="overflow-x-auto">
         <?= buildTable($pages, $config); ?>

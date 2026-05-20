@@ -2,7 +2,7 @@
 header('Cache-Control: no-store, no-cache, must-revalidate');
 $fld   = $_GET['fld']   ?? 'slug';
 $val   = isset($_GET['val']) ? urldecode($_GET['val']) : '';
-$table = $_GET['table'] ?? 'products';
+$table = $_GET['table'] ?? 'events';
 $tableConfigs = require APP_PATH . '/shared/table_configs.php';
 $page  = max(1, (int)($_GET['page'] ?? 1));
 $offset = ($page - 1) * PER_PAGE;
