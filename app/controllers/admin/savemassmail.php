@@ -39,8 +39,6 @@ if (!$emailRec) {
     exit;
 }
 
-$emName = $emailRec->em_name;
-
 // ── Members in group ──────────────────────────────────────────────────────────
 $members = getListWhere(
     'members',
@@ -57,9 +55,9 @@ if (!$members || $members->num_rows === 0) {
 // ── Insert one queued row per member ──────────────────────────────────────────
 $stmt = $db->prepare(
     "INSERT INTO mass_mail_send
-        (member_id, list_id, email_id, m_subj, m_from, em_name, campaign, m_sent)
+        (member_id, list_id, email_id, m_subj, m_from, campaign, m_sent)
      VALUES
-        (?, ?, ?, ?, ?, ?, ?, 0)"
+        (?, ?, ?, ?, ?, ?, 0)"
 );
 
 if (!$stmt) {
@@ -87,13 +85,12 @@ while ($member = $members->fetch_object()) {
     }
 
     $stmt->bind_param(
-        'iiissss',
+        'iiisss',
         $member->id,
         $listId,
         $emailId,
         $subject,
         $from,
-        $emName,
         $campaign
     );
 
