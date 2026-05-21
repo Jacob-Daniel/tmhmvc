@@ -77,7 +77,7 @@ return [
         'table'   => 'subscribers',
         'form'    => 'subscriberform',
         'list'    => 'subscriberlist',
-        'fields'  => ['email','group_id'],
+        'fields'  => ['email','group_id','unsub'], //allowed filter fields
         'headers' => ['ID', 'Email','Group ID','View/Edit', 'Delete'],
         'columns' => [
             ['type' => 'text',      'field' => 'id'],

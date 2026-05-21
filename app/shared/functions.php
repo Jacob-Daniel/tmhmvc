@@ -1180,19 +1180,19 @@ function cleanupOrphanImages(mysqli $db, bool $dryRun = false): array
  * Build a paginated list result with optional filtering.
  *
  * @param array $config {
- *   table        string   Required. DB table name.
- *   search_fields array   Columns to match against search term (OR'd together).
- *   order        string   ORDER BY clause. Default: 'ORDER BY id DESC'.
- *   per_page     int      Rows per page. Default: PER_PAGE constant.
- *   extra_where  string   Any extra WHERE conditions (e.g. 'AND active=1').
+ *   table         string   Required. DB table name.
+ *   search_fields array    Columns to match against search term (OR'd together).
+ *   order         string   ORDER BY clause. Default: 'ORDER BY id DESC'.
+ *   per_page      int      Rows per page. Default: PER_PAGE constant.
+ *   extra_where   string   Any extra WHERE conditions (e.g. 'AND active=1').
+ *   where_fields  array    Exact-match filters: ['group_id' => 5, 'unsub' => 0]
+ *                          Values pulled from $config, $_GET, or $_POST (in that priority).
  * }
  * @return array { items, pageinfo, search, page }
  */
-
 function buildListQuery(array $config): array
 {
     global $db;
-
     $table        = $config['table'];
     $searchFields = $config['search_fields'] ?? [];
     $order        = $config['order']         ?? 'ORDER BY id DESC';
@@ -1200,49 +1200,70 @@ function buildListQuery(array $config): array
     $extraWhere   = $config['extra_where']   ?? '';
     $drillId      = $config['drill_id']      ?? 0;
     $drillField   = $config['drill_field']   ?? '';
+    $whereFields  = $config['where_fields']  ?? [];   // ← NEW
 
     $page   = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
     $offset = ($page - 1) * $perPage;
     $search = trim($_GET['val'] ?? '');
-
 
     if ($drillId > 0 && $drillField) {
         $items     = getListDrillDown($drillId, $table, $drillField, $order, $offset, $perPage);
         $cats      = rtrim(getCategories($drillId), ',');
         $totalRows = $db->query("SELECT COUNT(*) as total FROM `$table` WHERE `$drillField` IN ($cats)")->fetch_object()->total ?? 0;
     } else {
-        $where  = '';
-        $params = [];
-        $types  = '';
+        $conditions = [];
+        $params     = [];
+        $types      = '';
 
+        // --- 1. Dynamic exact-match filters (where_fields) ---
+        foreach ($whereFields as $field => $value) {
+            // Priority: explicit config value → _GET → _POST → skip
+            if ($value !== null && $value !== '') {
+                $resolved = $value;
+            } elseif (isset($_GET[$field]) && $_GET[$field] !== '') {
+                $resolved = $_GET[$field];
+            } elseif (isset($_POST[$field]) && $_POST[$field] !== '') {
+                $resolved = $_POST[$field];
+            } else {
+                continue; // no value available, skip this filter
+            }
+            $conditions[] = "`$field` = ?";
+            $params[]     = $resolved;
+            $types       .= is_int($resolved) ? 'i' : 's';
+        }
+
+        // --- 2. Search across search_fields (OR'd) ---
         if ($search !== '' && !empty($searchFields)) {
-            $clauses = array_map(fn($col) => "$col LIKE ?", $searchFields);
-            $where   = 'WHERE (' . implode(' OR ', $clauses) . ')';
-            $like    = "%$search%";
+            $clauses      = array_map(fn($col) => "$col LIKE ?", $searchFields);
+            $conditions[] = '(' . implode(' OR ', $clauses) . ')';
+            $like         = "%$search%";
             foreach ($searchFields as $_) {
                 $params[] = $like;
                 $types   .= 's';
             }
-            if ($extraWhere) $where .= " $extraWhere";
+        }
+
+        // --- 3. Build WHERE ---
+        $where = '';
+        if ($conditions) {
+            $where = 'WHERE ' . implode(' AND ', $conditions);
+            if ($extraWhere) $where .= " $extraWhere";          // already has AND prefix
         } elseif ($extraWhere) {
             $where = 'WHERE ' . ltrim($extraWhere, 'AND ');
         }
 
+        // --- 4. Count ---
         $countStmt = $db->prepare("SELECT COUNT(*) as total FROM `$table` $where");
         if ($params) $countStmt->bind_param($types, ...$params);
         $countStmt->execute();
         $totalRows = $countStmt->get_result()->fetch_object()->total ?? 0;
 
+        // --- 5. Data ---
         $dataStmt = $db->prepare("SELECT * FROM `$table` $where $order LIMIT ?, ?");
         $dataStmt->bind_param($types . 'ii', ...[...$params, $offset, $perPage]);
         $dataStmt->execute();
         $items = $dataStmt->get_result();
-        // $items = $dataStmt->get_result()->fetch_all(MYSQLI_ASSOC); // Just for reference how to convert to ASSOC!
     }
-
-    // error_log("buildListQuery: table=$table search=$search fields=" . implode(',', $searchFields));
-    // error_log("buildListQuery: where=$where params=" . implode(',', $params));
-    // error_log("buildListQuery: totalRows=$totalRows itemCount=" . $items->num_rows);
 
     return [
         'items'    => $items,

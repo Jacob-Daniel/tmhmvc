@@ -1,21 +1,37 @@
 import { DataModuleButton, DataModuleContainer } from "../types";
 
-export function initList() {
-    const searchInput = document.getElementById("psch") as HTMLInputElement;
-    const targetId = searchInput.dataset.target || "restab";
+export function initList(params = {}) {
+    const searchInput = document.getElementById(
+        "psch",
+    ) as HTMLInputElement | null;
+    if (!searchInput) return;
+
+    const targetId = searchInput.dataset.target || "restable";
+    const restab = document.getElementById(targetId);
+    if (!restab) return;
 
     async function fetchList() {
-        const restab = document.getElementById(
-            searchInput.dataset.target || "restable",
-        );
-        if (!searchInput || !restab) return;
+        const table = encodeURIComponent(searchInput!.dataset.table || "");
+        const field = encodeURIComponent(searchInput!.dataset.field || "");
+        const val = searchInput!.value.trim();
 
-        const table = encodeURIComponent(searchInput.dataset.table || "events");
-        const field = encodeURIComponent(searchInput.dataset.field || "slug");
-        const val = searchInput.value.trim();
         if (val.length > 0 && val.length < 3) return;
 
-        const url = `/admin/api/getlist?table=${table}&fld=${field}&val=${encodeURIComponent(val)}&_=${Date.now()}`;
+        // Collect all data-filter elements within the same fieldset/container
+        const container = searchInput!.closest("fieldset") ?? document;
+        const filterEls =
+            container.querySelectorAll<HTMLElement>("[data-filter]");
+        const extraParams = new URLSearchParams();
+        filterEls.forEach((el) => {
+            const filterField = el.dataset.filter!;
+            const value = (el as HTMLInputElement | HTMLSelectElement).value;
+            if (filterField && value !== "") {
+                console.log(value, "value filter", filterField);
+                extraParams.set(filterField, value);
+            }
+        });
+
+        const url = `/admin/api/getlist?table=${table}&fld=${field}&val=${encodeURIComponent(val)}&${extraParams.toString()}&_=${Date.now()}`;
 
         try {
             const resp = await fetch(url, {
@@ -23,15 +39,14 @@ export function initList() {
             });
             if (!resp.ok) throw new Error("Failed to fetch list");
             const html = await resp.text();
-            restab.innerHTML = html;
+            restab!.innerHTML = html;
         } catch (err) {
             console.error("getList error:", err);
         }
     }
 
-    if (!searchInput) return;
-
     let timeout: number;
+
     searchInput.addEventListener("input", () => {
         clearTimeout(timeout);
         timeout = window.setTimeout(() => fetchList(), 300);
@@ -42,6 +57,12 @@ export function initList() {
             e.preventDefault();
             fetchList();
         }
+    });
+
+    // Bind any data-filter elements (selects, inputs) in the same container
+    const container = searchInput.closest("fieldset") ?? document;
+    container.querySelectorAll<HTMLElement>("[data-filter]").forEach((el) => {
+        el.addEventListener("change", () => fetchList());
     });
 
     document

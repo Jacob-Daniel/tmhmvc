@@ -11,7 +11,22 @@
         <div>
             <?php draw_pager('subscriberlist', $pageinfo['pages'], $pageinfo['page']); ?>
         </div>
-
+        <select
+            data-filter="group_id"
+            class="px-3 py-1.5 border rounded-md text-sm"
+        >
+                <option value="">All groups</option>
+            <?php foreach ($groups as $g): ?>
+                <option value="<?= $g['id'] ?>" <?= ($_GET['group_id'] ?? '') == $g['id'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($g['group_name']) ?>
+                </option>
+            <?php endforeach; ?>
+        </select>
+        <select data-filter="unsub" class="px-3 py-1.5 border rounded-md text-sm">
+            <option value="">All</option>
+            <option value="0">Active</option>
+            <option value="1">Unsubscribed</option>
+        </select>        
         <input
             type="text"
             id="psch"
