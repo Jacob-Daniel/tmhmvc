@@ -13,6 +13,7 @@ $fname = '';
 $lname = '';
 
 $group = $groupId ? getRecord('email_groups', 'id', $groupId) : null;
+        $emailgroups = getList('email_groups', 'ORDER BY group_name');
 
 if ($itemId) {
     $rec = getRecord('subscribers', 'id', $itemId);
@@ -35,4 +36,5 @@ render('subscriberform', [
     'email'   => $email,
     'fname'   => $fname,
     'lname'   => $lname,
+    'emailgroups'  => $emailgroups,
 ]);

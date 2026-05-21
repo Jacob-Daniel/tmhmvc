@@ -51,21 +51,6 @@
                     ],
                 ]); ?>
             </div>
-
-            <?php if ($id): ?>
-            <div class="border p-3 rounded-sm">
-                <p class="text-xs text-gray-500 mb-2">Manage subscribers in this group</p>
-                <button
-                    type="button"
-                    data-route="emailgroupsubscriberlist"
-                    data-item="<?= (int)$id ?>"
-                    class="text-sm text-blue-600 hover:underline"
-                >
-                    View / Edit Members &rarr;
-                </button>
-            </div>
-            <?php endif; ?>
-
         </div>
     </fieldset>
 </form>

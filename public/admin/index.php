@@ -30,7 +30,6 @@ $allowedActions = [
     'catlist',
     'eventlist',
     'emailform',
-    'emailgroupsubscriberlist',
     'massmailform',
     'emailgroupform',
     'emailgrouplist',

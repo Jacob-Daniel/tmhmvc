@@ -19,7 +19,6 @@
             <?php endif; ?>
         </legend>
 
-        <?php /* Main column */ ?>
         <div class="md:col-span-8 space-y-4 bg-white">
 
             <div id="message" class="hidden w-full mb-5 p-2"></div>
@@ -55,6 +54,24 @@
                     >
                 </div>
             </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-y-1">
+                    <label class="block text-sm font-medium mb-2">Group</label>
+                    <?php if (isset($emailgroups) && $emailgroups->num_rows > 0): ?>
+                    <select name="group_id" class="w-full border rounded p-2 text-sm">
+                        <option value="">Select...</option>
+                        <?php while ($g = $emailgroups->fetch_object()): ?>
+                            <option value="<?= $g->id ?>"
+                                <?= ((string)$groupId === (string)$g->id) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($g->group_name, ENT_QUOTES, 'UTF-8') ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                    <?php else: ?>
+                        <p>No groups found</p>
+                    <?php endif; ?>
+                </div>
+            </div>
 
             <?php if ($id && isset($rec->unsub)): ?>
             <div class="flex flex-col gap-y-1 text-sm text-gray-500">
@@ -76,7 +93,7 @@
         <div class="md:col-span-4 flex flex-col gap-y-3 min-w-0">
             <div class="flex flex-col space-y-2 min-w-0">
                 <?php actionButtons([
-                    'module'  => 'emailgroupsubscriberlist',
+                    'module'  => 'subscribers', // db table...
                     'id'      => $id,
                     'targets' => [
                         'save'    => 'subscriberform',

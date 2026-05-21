@@ -125,7 +125,6 @@ function initPageJS(action, params = {}) {
         case "navlist":
         case "eventlist":
         case "subscriberlist":
-        case "emailgrouplist":
         case "emaillist":
             initList(params);
             break;

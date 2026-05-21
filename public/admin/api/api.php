@@ -41,7 +41,6 @@ $allowed = [
     'emailform',
     'emailgroupform',
     'emailgrouplist',
-    'emailgroupsubscriberlist',
     'subscriberlist',
     'subscriberform',
     'configform',
