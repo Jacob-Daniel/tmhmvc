@@ -8,7 +8,7 @@ $page    = filter_input(INPUT_GET, 'page',    FILTER_VALIDATE_INT) ?: 1;
 $_SESSION['page'] = $page;
 
 if (!$groupId) {
-    render('emailgroupmembers', ['group' => null, 'members' => null, 'groupId' => null, 'page' => $page]);
+    render('emailgroupsubscribers', ['group' => null, 'subscribers' => null, 'groupId' => null, 'page' => $page]);
     exit;
 }
 
@@ -21,11 +21,11 @@ if ($delId) {
 }
 
 $group   = getRecord('email_groups', 'id', $groupId);
-$members = getList('members', "WHERE group_id = {$groupId} ORDER BY lname, fname");
+$subscribers = getList('subscribers', "WHERE group_id = {$groupId} ORDER BY lname, fname");
 
-render('emailgroupmembers', [
+render('emailgroupsubscriberlist', [
     'group'   => $group,
-    'members' => $members,
+    'subscribers' => $subscribers,
     'groupId' => $groupId,
     'page'    => $page,
 ]);

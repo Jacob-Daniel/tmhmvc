@@ -113,7 +113,7 @@ function initPageJS(action, params = {}) {
         case "catform":
         case "eventform":
         case "configform":
-        case "memberform":
+        case "subscriberform":
             initForm();
             initImageModal();
             break;
@@ -124,7 +124,7 @@ function initPageJS(action, params = {}) {
         case "catlist":
         case "navlist":
         case "eventlist":
-        case "memberlist":
+        case "subscriberlist":
         case "emailgrouplist":
         case "emaillist":
             initList(params);

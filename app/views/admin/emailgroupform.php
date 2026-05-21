@@ -54,10 +54,10 @@
 
             <?php if ($id): ?>
             <div class="border p-3 rounded-sm">
-                <p class="text-xs text-gray-500 mb-2">Manage members in this group</p>
+                <p class="text-xs text-gray-500 mb-2">Manage subscribers in this group</p>
                 <button
                     type="button"
-                    data-route="emailgroupmembers"
+                    data-route="emailgroupsubscriberlist"
                     data-item="<?= (int)$id ?>"
                     class="text-sm text-blue-600 hover:underline"
                 >

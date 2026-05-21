@@ -73,10 +73,10 @@ return [
             ['type' => 'action',    'target' => 'delete', 'center' => true],
         ],
     ], 
-   'members' => [
-        'table'   => 'members',
-        'form'    => 'memberform',
-        'list'    => 'memberlist',
+   'subscribers' => [
+        'table'   => 'subscribers',
+        'form'    => 'subscriberform',
+        'list'    => 'subscriberlist',
         'fields'  => ['email','group_id'],
         'headers' => ['ID', 'Email','Group ID','View/Edit', 'Delete'],
         'columns' => [

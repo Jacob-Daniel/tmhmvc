@@ -15,7 +15,7 @@ $lname = '';
 $group = $groupId ? getRecord('email_groups', 'id', $groupId) : null;
 
 if ($itemId) {
-    $rec = getRecord('members', 'id', $itemId);
+    $rec = getRecord('subscribers', 'id', $itemId);
 
     if ($rec) {
         $id      = $rec->id;
@@ -27,7 +27,7 @@ if ($itemId) {
     }
 }
 
-render('memberform', [
+render('subscriberform', [
     'rec'     => $rec,
     'id'      => $id,
     'groupId' => $groupId,

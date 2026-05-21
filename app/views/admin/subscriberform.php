@@ -6,7 +6,7 @@
     id="memberform"
 >
     <input type="hidden" name="edit"      value="<?= (int)$id ?>">
-    <input type="hidden" name="table"     value="members">
+    <input type="hidden" name="table"     value="subscribers">
     <input type="hidden" name="idfield"   value="id">
     <input type="hidden" name="item_word" value="Member">
     <input type="hidden" name="group_id"  value="<?= (int)$groupId ?>">
@@ -76,14 +76,14 @@
         <div class="md:col-span-4 flex flex-col gap-y-3 min-w-0">
             <div class="flex flex-col space-y-2 min-w-0">
                 <?php actionButtons([
-                    'module'  => 'emailgroupmembers',
+                    'module'  => 'emailgroupsubscriberlist',
                     'id'      => $id,
                     'targets' => [
-                        'save'    => 'memberform',
-                        'back'    => 'memberlist',
-                        'new'     => 'memberform',
-                        'refresh' => 'memberform',
-                        'delete'  => 'memberform',
+                        'save'    => 'subscriberform',
+                        'back'    => 'subscriberlist',
+                        'new'     => 'subscriberform',
+                        'refresh' => 'subscriberform',
+                        'delete'  => 'subscriberform',
                     ],
                     'condition' => $groupId,
                 ]); ?>

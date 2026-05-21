@@ -4,11 +4,11 @@
 
 <fieldset class="mb-4 border rounded">
     <legend class="font-semibold ms-3">
-        Members &mdash; <?= htmlspecialchars($group->group_name, ENT_QUOTES) ?>
+        Subscribers &mdash; <?= htmlspecialchars($group->group_name, ENT_QUOTES) ?>
     </legend>
     <div class="flex items-center space-x-2 mb-2 p-3">
         <?php actionButtons([
-            'module'  => 'emailgroupmembers',
+            'module'  => 'emailgroupsubscriberlist',
             'id'      => 0,
             'targets' => [
                 'back' => 'emailgrouplist',
@@ -28,8 +28,8 @@
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-        <?php if ($members && $members->num_rows): ?>
-            <?php while ($m = $members->fetch_object()): ?>
+        <?php if ($subscribers && $subscribers->num_rows): ?>
+            <?php while ($m = $subscribers->fetch_object()): ?>
             <tr class="hover:bg-gray-50 transition text-zinc-900 <?= (int)$m->unsub === 1 ? 'opacity-50' : '' ?>">
                 <td class="px-4 py-3"><?= htmlspecialchars($m->email, ENT_QUOTES) ?></td>
                 <td class="px-4 py-3"><?= htmlspecialchars($m->fname, ENT_QUOTES) ?></td>
@@ -45,7 +45,7 @@
                 </td>
                 <td class="px-4 py-3 text-center">
                     <?php actionButtons([
-                        'module'  => 'emailgroupmembers',
+                        'module'  => 'emailgroupsubscriberlist',
                         'id'      => $m->id,
                         'targets' => [
                             'edit' => 'emailgroupform',
@@ -54,7 +54,7 @@
                 </td>
                 <td class="px-4 py-3 text-center">
                     <?php actionButtons([
-                        'module'  => 'emailgroupmembers',
+                        'module'  => 'emailgroupsubscriberlist',
                         'id'      => $m->id,
                         'targets' => [
                             'delete' => 'emailgrouplist',
@@ -66,7 +66,7 @@
         <?php else: ?>
             <tr>
                 <td colspan="6" class="px-4 py-6 text-center text-gray-500">
-                    No members in this group yet.
+                    No subscribers in this group yet.
                 </td>
             </tr>
         <?php endif; ?>
