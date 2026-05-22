@@ -52,7 +52,7 @@ $allowed = [
     'events-news',
     'events-slugs',
     'page',
-    'config',
+    'site-config',
     'page-by-slug',
     'nav',    
 ];
