@@ -4,33 +4,6 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 
 // --------------------------------------------------
-// Token Auth
-// --------------------------------------------------
-$headers = getallheaders();
-$authHeader = $headers['Authorization'] ?? $headers['authorization'] ?? '';
-
-if (!preg_match('/^Bearer\s+(.+)$/i', $authHeader, $matches)) {
-    http_response_code(401);
-    echo json_encode(['error' => 'Missing or malformed Authorization header']);
-    exit;
-}
-
-$providedToken = trim($matches[1]);
-
-$tokenRow = getListWhere(
-    'api_tokens',
-    'WHERE token = ? LIMIT 1',
-    's',
-    [$providedToken]
-)->fetch_object();
-
-if (!$tokenRow) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Invalid token']);
-    exit;
-}
-
-// --------------------------------------------------
 // Filters
 // --------------------------------------------------
 

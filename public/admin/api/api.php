@@ -63,7 +63,6 @@ $allowed = [
     'update_password',
     'savemassmail',
     'massmailform',
-    'apievents',
     'savemassmail',
 ];
 
