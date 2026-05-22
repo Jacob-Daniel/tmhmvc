@@ -4,9 +4,10 @@ declare(strict_types=1);
 // --------------------------------------------------
 // Filters
 // --------------------------------------------------
-$fromTs  = filter_input(INPUT_GET, 'from',     FILTER_VALIDATE_INT);
-$toTs    = filter_input(INPUT_GET, 'to',       FILTER_VALIDATE_INT);
-$catId   = filter_input(INPUT_GET, 'cat_id',   FILTER_VALIDATE_INT);
+$dateParam = filter_input(INPUT_GET, 'date', FILTER_SANITIZE_SPECIAL_CHARS);
+$fromTs    = filter_input(INPUT_GET, 'from',   FILTER_VALIDATE_INT);
+$toTs      = filter_input(INPUT_GET, 'to',     FILTER_VALIDATE_INT);
+$catId     = filter_input(INPUT_GET, 'cat_id', FILTER_VALIDATE_INT);
 
 // --------------------------------------------------
 // Pagination
@@ -22,22 +23,46 @@ $baseWhere  = 'WHERE active = 1';
 $baseTypes  = '';
 $baseParams = [];
 
-if ($catId)  { $baseWhere .= ' AND cat_id = ?';     $baseTypes .= 'i'; $baseParams[] = $catId; }
-if ($fromTs) { $baseWhere .= ' AND start_date >= ?'; $baseTypes .= 'i'; $baseParams[] = $fromTs; }
-if ($toTs)   { $baseWhere .= ' AND start_date <= ?'; $baseTypes .= 'i'; $baseParams[] = $toTs; }
+if ($catId) {
+    $baseWhere  .= ' AND cat_id = ?';
+    $baseTypes  .= 'i';
+    $baseParams[] = $catId;
+}
+
+if ($dateParam) {
+    // exact date match
+    $midnight = strtotime($dateParam . ' 00:00:00');
+    $baseWhere  .= ' AND DATE(FROM_UNIXTIME(start_date)) = DATE(FROM_UNIXTIME(?))';
+    $baseTypes  .= 'i';
+    $baseParams[] = $midnight;
+} elseif ($fromTs) {
+    $baseWhere  .= ' AND start_date >= ?';
+    $baseTypes  .= 'i';
+    $baseParams[] = $fromTs;
+} else {
+    // default — from today midnight
+    $midnight     = strtotime('today midnight');
+    $baseWhere  .= ' AND start_date >= ?';
+    $baseTypes  .= 'i';
+    $baseParams[] = $midnight;
+}
+
+if ($toTs) {
+    $baseWhere  .= ' AND start_date <= ?';
+    $baseTypes  .= 'i';
+    $baseParams[] = $toTs;
+}
 
 // --------------------------------------------------
 // Count
 // --------------------------------------------------
-$countResult = $baseTypes
-    ? getListWhere('events', $baseWhere, $baseTypes, $baseParams)
-    : getList('events', $baseWhere);
-$total = $countResult->num_rows;
+$countResult = getListWhere('events', $baseWhere, $baseTypes, $baseParams);
+$total       = $countResult->num_rows;
 
 // --------------------------------------------------
 // Paginated query
 // --------------------------------------------------
-$dataWhere  = $baseWhere . ' ORDER BY start_date DESC LIMIT ? OFFSET ?';
+$dataWhere  = $baseWhere . ' GROUP BY title ORDER BY MIN(start_date) ASC LIMIT ? OFFSET ?';
 $dataTypes  = $baseTypes . 'ii';
 $dataParams = [...$baseParams, $pageSize, $offset];
 

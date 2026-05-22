@@ -1,30 +1,42 @@
 <?php
 declare(strict_types=1);
 
-// --------------------------------------------------
-// Filters
-// --------------------------------------------------
 $catId = filter_input(INPUT_GET, 'cat_id', FILTER_VALIDATE_INT);
 
-// --------------------------------------------------
-// Query
-// --------------------------------------------------
-$where  = 'WHERE active = 1';
+$where  = 'WHERE e.active = 1 AND e.is_canonical = 1';
 $types  = '';
 $params = [];
 
-if ($catId) { $where .= ' AND cat_id = ?'; $types .= 'i'; $params[] = $catId; }
+if ($catId) {
+    $where .= ' AND e.cat_id = ?';
+    $types .= 'i';
+    $params[] = $catId;
+}
 
-$where .= ' ORDER BY start_date DESC';
+$where .= ' ORDER BY e.start_date DESC';
 
 try {
-    $result = $types
-        ? getListWhere('events', $where, $types, $params)
-        : getList('events', $where);
+    $sql = "SELECT e.slug, c.slug AS cat 
+            FROM events e
+            JOIN categories c ON e.cat_id = c.id
+            {$where}";
+
+    global $db;
+    if ($types) {
+        $stmt = $db->prepare($sql);
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        $result = $stmt->get_result();
+    } else {
+        $result = $db->query($sql);
+    }
 
     $slugs = [];
     while ($row = $result->fetch_assoc()) {
-        $slugs[] = ['slug' => $row['slug']];
+        $slugs[] = [
+            'slug' => $row['slug'],
+            'cat'  => $row['cat'],
+        ];
     }
 
     echo json_encode($slugs);

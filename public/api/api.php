@@ -46,9 +46,15 @@ if (!$endpoint) {
 // Whitelist
 // --------------------------------------------------
 $allowed = [
+    'categories',
+    'event',
     'events',
     'events-news',
-    'event-slugs',
+    'events-slugs',
+    'page',
+    'config',
+    'page-by-slug',
+    'nav',    
 ];
 
 if (!in_array($endpoint, $allowed)) {
