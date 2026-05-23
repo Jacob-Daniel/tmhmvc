@@ -51,6 +51,7 @@ $allowed = [
     'events',
     'events-news',
     'events-slugs',
+    'calendar-events',
     'page',
     'site-config',
     'page-by-slug',
