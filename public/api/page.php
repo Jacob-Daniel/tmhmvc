@@ -10,14 +10,18 @@ if (!$id) {
 }
 
 try {
-    $result = getListWhere('pages', 'WHERE id = ? LIMIT 1', 'i', [$id]);
-    $page = $result->fetch_assoc();
+    $page = getRecord('pages','id',$id);
 
     if (!$page) {
         http_response_code(404);
         echo json_encode(['error' => 'Page not found']);
         exit;
     }
+
+    $seolink = getRecord('seo_links', 'entity_id', $page->id);
+    $seo     = getRecord('seo', 'id', $seolink->target_id);
+
+    $page->seo = $seo;
 
     echo json_encode($page);
 } catch (RuntimeException $e) {

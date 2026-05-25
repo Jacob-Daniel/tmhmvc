@@ -193,6 +193,7 @@ if ($id) {
     $set = [];
     $types = '';
     $values = [];
+    $insertId = $id;
 
     foreach ($data as $col => $val) {
         $set[] = "`$col` = ?";
@@ -234,10 +235,33 @@ if ($id) {
     $stmt = $db->prepare($sql);
     $stmt->bind_param($types, ...$values);
     $stmt->execute();
+    $insertId = $db->insert_id;
 
     $message = 'Created successfully.';
 }
 
+/*
+|--------------------------------------------------------------------------
+| SEO  (before ISR so revalidation picks up fresh meta)
+|--------------------------------------------------------------------------
+*/
+
+$seoFields = array_filter($_POST, fn($k) => str_starts_with($k, 'seo_'), ARRAY_FILTER_USE_KEY);
+if ($seoFields) {
+    $seoData = array_combine(
+        array_map(fn($k) => substr($k, 4), array_keys($seoFields)),
+        array_values($seoFields)
+    );
+    saveLinkedRecord(
+        linkTable:   'seo_links',
+        targetTable: 'seo',
+        entityType:  $table,
+        entityId:    $insertId,
+        fields:      ['metaTitle','metaDescription','keywords','canonicalURL',
+                      'ogImageAlt','noIndex','structuredDataType'],
+        data:        $seoData
+    );
+}
 /*
 |--------------------------------------------------------------------------
 | ISR Revalidation

@@ -1,6 +1,7 @@
 <?php
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="dashboard">Dashboard</li>';
-	echo '<li class="nav-item cursor-pointer text-sm" data-route="configform">Settings</li>';
+	echo '<li class="nav-item cursor-pointer text-sm" data-route="configform">Site Settings</li>';
+	echo '<li class="nav-item cursor-pointer text-sm" data-route="emailconfigform">Email Settings</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="gallery">Gallery</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="pagelist">Pages</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="eventlist">Events</li>';

@@ -3,6 +3,12 @@ declare(strict_types=1);
 
 $catId = filter_input(INPUT_GET, 'cat_id', FILTER_VALIDATE_INT);
 
+if (!$catId) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing cat_id parameter']);
+    exit;
+}
+
 $where  = 'WHERE active = 1';
 $types  = '';
 $params = [];
@@ -19,6 +25,12 @@ try {
     $result = $types
         ? getListWhere('events', $where, $types, $params)
         : getList('events', $where);
+
+    if (!$result) {
+        http_response_code(404);
+        echo json_encode(['error' => 'Events not found']);
+        exit;
+    }    
 
     $events = [];
     while ($row = $result->fetch_assoc()) {

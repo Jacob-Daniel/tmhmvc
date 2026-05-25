@@ -1,5 +1,44 @@
 <?php
 return [
+    'config' => [
+        'table'      => 'config',
+        'form'       => 'configform',
+        'list'       => null,
+        'word'       => 'Settings',
+        'saveAction' => '/admin/api/saveform',
+        'fields' => [
+            // Main column
+            ['type' => 'text', 'name' => 'comp_name',    'label' => 'Heading'],
+            ['type' => 'text', 'name' => 'site_tagline',  'label' => 'Tagline'],
+            ['type' => 'text', 'name' => 'domain',        'label' => 'Domain'],
+            ['type' => 'section', 'label' => 'SEO', 'fields' => [
+                ['type' => 'seo'],
+            ]],
+            // Sidebar
+            ['type' => 'section', 'label' => 'Social', 'sidebar' => true, 'fields' => [
+                ['type' => 'text', 'name' => 'fb_url',   'label' => 'Facebook URL',  'sidebar' => true],
+                ['type' => 'text', 'name' => 'inst_url', 'label' => 'Instagram URL', 'sidebar' => true],
+                ['type' => 'text', 'name' => 'tw_url',   'label' => 'Twitter URL',   'sidebar' => true],
+            ]],
+        ],
+        'actions' => ['save', 'refresh'],
+    ],            
+    'config_email' => [
+        'table'      => 'config_email', 
+        'form'       => 'emailconfigform',
+        'saveAction' => '/admin/api/saveform',
+        'word'       => 'Email Settings',
+        'fields' => [
+            ['type' => 'text',     'name' => 'site_email',     'label' => 'Email Address'],
+            ['type' => 'text',     'name' => 'pp_email',       'label' => 'PayPal Email'],
+            ['type' => 'password', 'name' => 'email_password', 'label' => 'Email Password', 'placeholder' => 'Leave blank to keep current'],
+            ['type' => 'text',     'name' => 'email_username', 'label' => 'Username'],
+            ['type' => 'text',     'name' => 'email_host',     'label' => 'Host'],
+            ['type' => 'text',     'name' => 'email_port',     'label' => 'Port'],
+            ['type' => 'text',     'name' => 'email_smtp',     'label' => 'SMTP'],
+        ],
+        'actions' => ['save'],
+    ],
     'categories' => [
         'table' => 'categories',
         'form'    => 'catform',
@@ -30,6 +69,43 @@ return [
             ['type' => 'action',    'target' => 'delete', 'center' => true],
         ],
     ],
+    'eventform' => [
+        'table'      => 'events',
+        'form'       => 'eventform',
+        'list'       => 'eventlist',
+        'word'       => 'Event Item',
+        'saveAction' => '/admin/api/saveeventform',
+        'fields' => [
+            // Main column
+            ['type' => 'text',     'name' => 'title',   'label' => 'Title'],
+            ['type' => 'text',     'name' => 'slug',    'label' => 'URL Slug'],
+            ['type' => 'textarea', 'name' => 'summary', 'label' => 'Summary', 'rows' => 2],
+            ['type' => 'richtext', 'name' => 'content', 'label' => 'Content'],
+            ['type' => 'section', 'label' => 'SEO', 'fields' => [
+                ['type' => 'seo'],
+            ]],
+            // Sidebar
+            ['type' => 'checkboxgroup', 'sidebar' => true, 'fields' => [
+                ['name' => 'active',   'label' => 'Active'],
+                ['name' => 'featured', 'label' => 'Featured'],
+            ]],
+            ['type' => 'select',   'name' => 'cat_id',    'label' => 'Primary Category', 'source' => 'categories', 'optionLabel' => 'slug', 'sidebar' => true],
+            ['type' => 'number',   'name' => 'price',     'label' => 'Price',            'sidebar' => true],
+            ['type' => 'image',    'name' => 'imagepath', 'label' => 'Select Main Image','sidebar' => true],
+            ['type' => 'group',    'label' => 'Calendar', 'sidebar' => true, 'fields' => [
+                ['type' => 'date', 'name' => 'start_date', 'label' => 'Start Date'],
+                ['type' => 'date', 'name' => 'end_date',   'label' => 'End Date'],
+                ['type' => 'time', 'name' => 'start_time', 'label' => 'Start Time'],
+                ['type' => 'time', 'name' => 'end_time',   'label' => 'End Time'],
+            ]],
+            ['type' => 'recurring', 'sidebar' => true],   // handled as a special block
+            ['type' => 'number',   'name' => 'sequence',  'label' => 'Sequence',         'sidebar' => true],
+            ['type' => 'text',     'name' => 'iframe',    'label' => 'Iframe Embed URL', 'sidebar' => true],
+            ['type' => 'textarea', 'name' => 'metak',     'label' => 'SEO: Meta Keywords',   'sidebar' => true],
+            ['type' => 'textarea', 'name' => 'metad',     'label' => 'SEO: Meta Description', 'sidebar' => true],
+        ],
+        'actions' => ['save', 'back', 'new', 'refresh', 'delete'],
+    ],    
     'pages' => [
         'table'   => 'pages',
         'form'    => 'pageform',
@@ -45,6 +121,28 @@ return [
             ['type' => 'action',    'target' => 'delete', 'center' => true],
         ],
     ],
+    'pageform' => [
+        'table'  => 'pages',
+        'form'   => 'pageform',
+        'list'   => 'pagelist',
+        'word'   => 'Page',
+        'layout' => 'sidebar', // sidebar | full
+        'fields' => [
+            // main column
+            ['type' => 'text',     'name' => 'title',   'label' => 'Title'],
+            ['type' => 'text',     'name' => 'slug',     'label' => 'Slug', 'hint' => 'SEO-friendly URL (e.g. /about-us)'],
+            ['type' => 'richtext', 'name' => 'content',  'label' => 'Page Content'],
+            ['type' => 'section', 'label' => 'SEO', 'fields' => [
+                ['type' => 'seo'],
+            ]],            
+            // sidebar
+            ['type' => 'checkbox', 'name' => 'active',   'label' => 'Active',           'sidebar' => true],
+            ['type' => 'image',    'name' => 'imagepath', 'label' => 'Main Image',       'sidebar' => true],
+            ['type' => 'textarea', 'name' => 'metak',    'label' => 'SEO: Meta Keywords','sidebar' => true],
+            ['type' => 'textarea', 'name' => 'metad',    'label' => 'SEO: Meta Description', 'sidebar' => true],
+        ],
+        'actions' => ['save', 'back', 'new', 'refresh', 'delete'],
+    ],    
     'navigation' => [
         'table'   => 'navigation',
         'form'    => 'navform',

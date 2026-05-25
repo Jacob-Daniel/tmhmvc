@@ -11,6 +11,16 @@ $stats = [
 	"Paid",
 ];
 
+function dbExecute(string $sql, string $types, array $values): mysqli_stmt
+{
+    global $db;
+    $stmt = $db->prepare($sql);
+    if (!$stmt) throw new RuntimeException($db->error);
+    if ($values) $stmt->bind_param($types, ...$values);
+    if (!$stmt->execute()) throw new RuntimeException($stmt->error);
+    return $stmt;
+}
+
 function insertRecord($table, $extra = "")
 {
 	global $db;
@@ -237,46 +247,6 @@ function getRows(
     return $result->fetch_all(MYSQLI_ASSOC);
 }
 
-function getGrandchildCategories(int $parentId): array
-{
-    global $db;
-
-    $sql = "
-        SELECT title, image_id,id,slug
-        FROM categories
-        WHERE parent_id IN (
-            SELECT id
-            FROM categories
-            WHERE id = ?
-        )
-        ORDER BY sequence
-    ";
-
-    $stmt = $db->prepare($sql);
-    if (!$stmt) {
-        die($db->error);
-    }
-
-    $stmt->bind_param('i', $parentId);
-    $stmt->execute();
-
-    $result = $stmt->get_result();
-    return $result->fetch_all(MYSQLI_ASSOC);
-}
-
-
-function getDistinctList($table, $field, $cond = "")
-{
-	global $db;
-
-	$sql = sprintf("select distinct %s from %s %s", $field, $table, $cond);
-	if (!($res = $db->query($sql))) {
-		die($db->error . "--" . $sql);
-	}
-
-	return $res;
-}
-
 function getRecord(string $table, string $field, $value, string $extraCond = "")
 {
 	global $db;
@@ -360,6 +330,97 @@ function getValues($table,$condfield,$condvalue,$flds,$cond='',$list=0)
 			return $rec;
 		}	
 	}
+}
+
+function getSeoRecord(string $entityType, int $entityId): ?object
+{
+    global $db;
+    $stmt = $db->prepare("
+        SELECT s.* FROM seo s
+        JOIN seo_links sl ON sl.seo_id = s.id
+        WHERE sl.entity_type = ? AND sl.entity_id = ?
+    ");
+    $stmt->bind_param('si', $entityType, $entityId);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_object() ?: null;
+}
+
+function saveLinkedRecord(
+    string $linkTable,
+    string $targetTable,
+    string $entityType,
+    int    $entityId,
+    array  $fields,
+    array  $data
+): void {
+    $link = getRecord($linkTable, 'entity_id', $entityId, "AND entity_type = '$entityType'");
+
+    if ($link) {
+        $set   = implode(', ', array_map(fn($f) => "`$f` = ?", $fields));
+        $vals  = array_map(fn($f) => $data[$f] ?? null, $fields);
+        $vals[] = $link->target_id;
+        dbExecute(
+            "UPDATE `$targetTable` SET $set WHERE id = ?",
+            str_repeat('s', count($fields)) . 'i',
+            $vals
+        );
+    } else {
+        $cols         = implode(', ', array_map(fn($f) => "`$f`", $fields));
+        $placeholders = implode(', ', array_fill(0, count($fields), '?'));
+        $vals         = array_map(fn($f) => $data[$f] ?? null, $fields);
+        dbExecute(
+            "INSERT INTO `$targetTable` ($cols) VALUES ($placeholders)",
+            str_repeat('s', count($fields)),
+            $vals
+        );
+        global $db;
+        $targetId = $db->insert_id;
+        dbExecute(
+            "INSERT INTO `$linkTable` (target_id, entity_type, entity_id) VALUES (?,?,?)",
+            'isi',
+            [$targetId, $entityType, $entityId]
+        );
+    }
+}
+
+function getGrandchildCategories(int $parentId): array
+{
+    global $db;
+
+    $sql = "
+        SELECT title, image_id,id,slug
+        FROM categories
+        WHERE parent_id IN (
+            SELECT id
+            FROM categories
+            WHERE id = ?
+        )
+        ORDER BY sequence
+    ";
+
+    $stmt = $db->prepare($sql);
+    if (!$stmt) {
+        die($db->error);
+    }
+
+    $stmt->bind_param('i', $parentId);
+    $stmt->execute();
+
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
+
+
+function getDistinctList($table, $field, $cond = "")
+{
+	global $db;
+
+	$sql = sprintf("select distinct %s from %s %s", $field, $table, $cond);
+	if (!($res = $db->query($sql))) {
+		die($db->error . "--" . $sql);
+	}
+
+	return $res;
 }
 
 function getRandomRecord($table, $idfield, $id)
@@ -1055,6 +1116,7 @@ function buildTable(mysqli_result $data, array $config): string
     <?php
     return ob_get_clean();
 }
+
 function render(string $view, array $data = []): void
 {
     extract($data, EXTR_SKIP);
@@ -1276,4 +1338,318 @@ function buildListQuery(array $config): array
             'offset'  => $offset,
         ],
     ];
+}
+
+function buildForm(?object $rec, array $config, array $extras = []): string
+{
+    $table  = $config['table'];
+    $word   = $config['word'] ?? $table;
+    $form   = $config['form'];
+    $list   = $config['list'];
+    $id     = $rec->id ?? null;
+    $title  = $rec->title ?? '';
+
+    $mainFields    = array_filter($config['fields'], fn($f) => empty($f['sidebar']));
+    $sidebarFields = array_filter($config['fields'], fn($f) => !empty($f['sidebar']));
+
+    ob_start(); ?>
+    <form action="/admin/api/saveform" method="post"
+          enctype="multipart/form-data" data-ajax id="<?= $form ?>">
+        <input type="hidden" name="edit"             value="<?= $id ?>">
+        <input type="hidden" name="table"            value="<?= $table ?>">
+        <input type="hidden" name="idfield"          value="id">
+        <input type="hidden" name="item_word"        value="<?= htmlspecialchars($word) ?>">
+        <input type="hidden" name="has_active_field" value="1">
+
+        <fieldset class="grid grid-cols-1 md:grid-cols-12 gap-6 border rounded p-3">
+            <legend class="font-semibold text-gray-700">
+                <?= htmlspecialchars($title, ENT_QUOTES) ?>
+            </legend>
+
+            <!-- Main column -->
+            <div class="md:col-span-8 space-y-4 bg-white">
+                <div id="message" class="hidden w-full mb-5 p-2"></div>
+                <?php foreach ($mainFields as $field): ?>
+					<?= renderFormField($field, $rec, $extras) ?>
+                <?php endforeach; ?>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="md:col-span-4 flex flex-col gap-y-3 min-w-0">
+                <div class="flex flex-col space-y-2 min-w-0">
+                    <?php actionButtons([
+                        'module'  => $table,
+                        'id'      => $id,
+                        'targets' => array_combine(
+                            $config['actions'],
+                            array_map(fn($a) => in_array($a, ['save','new','refresh']) ? $form : $list, $config['actions'])
+                        ),
+                    ]); ?>
+                </div>
+                <?php foreach ($sidebarFields as $field): ?>
+					<?= renderFormField($field, $rec, $extras) ?>
+                <?php endforeach; ?>
+            </div>
+        </fieldset>
+    </form>
+    <?php
+    return ob_get_clean();
+}
+
+function renderFormField(array $field, ?object $rec, array $extras = []): string
+{
+    $name  = $field['name'];
+    $label = $field['label'] ?? $name;
+    $hint  = $field['hint']  ?? '';
+    $value = $rec ? stripslashes(htmlspecialchars($rec->$name ?? '', ENT_QUOTES)) : '';
+
+    $inputClass   = 'w-full border rounded px-3 py-1.5 text-sm focus:outline-none focus:ring focus:ring-blue-200';
+    $wrapClass    = 'flex flex-col gap-y-1 border p-2 rounded-sm';
+
+    ob_start();
+    switch ($field['type']) {
+
+        case 'text':
+            ?>
+            <div class="flex flex-col gap-y-1">
+                <label for="<?= $name ?>" class="text-sm font-medium text-gray-700">
+                    <?= htmlspecialchars($label) ?>
+                    <?php if ($hint): ?><span class="font-normal text-gray-400"><?= htmlspecialchars($hint) ?></span><?php endif; ?>
+                </label>
+                <input name="<?= $name ?>" id="<?= $name ?>"
+                       value="<?= $value ?>"
+                       class="<?= $inputClass ?>">
+            </div>
+            <?php break;
+
+        case 'textarea':
+            ?>
+            <div class="<?= $wrapClass ?>">
+                <label for="<?= $name ?>" class="text-sm font-medium text-gray-700"><?= htmlspecialchars($label) ?></label>
+                <textarea id="<?= $name ?>" name="<?= $name ?>"
+                          class="border p-2 text-sm"><?= $value ?></textarea>
+            </div>
+            <?php break;
+
+        case 'richtext':
+            ?>
+            <div class="flex flex-col gap-y-1">
+                <label for="<?= $name ?>" class="text-sm font-medium text-gray-700 pt-2"><?= htmlspecialchars($label) ?></label>
+                <textarea id="<?= $name ?>" name="<?= $name ?>"
+                          class="mce-full w-full border rounded px-3 py-2 text-sm"
+                          rows="12"><?= $value ?></textarea>
+            </div>
+            <?php break;
+
+        case 'checkbox':
+            $checked = !empty($rec->$name) ? 'checked' : '';
+            ?>
+            <div class="flex gap-y-1 items-center gap-x-2 justify-start border p-2 rounded-sm">
+                <label for="<?= $name ?>"><?= htmlspecialchars($label) ?></label>
+                <input type="checkbox" id="<?= $name ?>" name="<?= $name ?>" value="1" <?= $checked ?>>
+            </div>
+            <?php break;
+
+        case 'image':
+            ?>
+            <div class="flex gap-y-1 items-center justify-start border p-3 rounded-sm">
+                <?php renderChooseImage([
+                    'fieldId'      => $name,
+                    'boxId'        => $name . '-box',
+                    'imgId'        => $name . '-img',
+                    'type'         => $field['imgType'] ?? 'single',
+                    'content'      => $field['content'] ?? '',
+                    'existingPath' => $rec->$name ?? '',
+                    'label'        => $label,
+                ]); ?>
+            </div>
+            <?php break;
+        case 'number':
+		    ?>
+		    <div class="flex flex-col border p-3 rounded">
+		        <label class="text-sm font-medium mb-1"><?= htmlspecialchars($label) ?></label>
+		        <input type="number"
+		               name="<?= $name ?>"
+		               step="any"
+		               value="<?= $value ?>"
+		               class="border rounded px-2 py-1 text-sm">
+		    </div>
+		    <?php break;
+
+		case 'date':
+		    ?>
+		    <div class="flex flex-col gap-1">
+		        <label class="text-sm"><?= htmlspecialchars($label) ?></label>
+		        <input name="<?= $name ?>"
+		               class="datepickr border rounded px-2 py-1 text-sm"
+		               value="<?= $value ?>">
+		    </div>
+		    <?php break;
+
+		case 'time':
+		    ?>
+		    <div class="flex flex-col gap-1 relative">
+		        <label class="text-sm"><?= htmlspecialchars($label) ?></label>
+		        <input name="<?= $name ?>"
+		               class="timepickr border rounded px-2 py-1 text-sm"
+		               value="<?= $value ?>">
+		    </div>
+		    <?php break;
+
+		case 'select':
+		    $source     = $extras[$field['source']] ?? null;
+		    $optionLabel = $field['optionLabel'] ?? 'name';
+		    ?>
+		    <div class="border p-3 rounded">
+		        <label class="block text-sm font-medium mb-2"><?= htmlspecialchars($label) ?></label>
+		        <select name="<?= $name ?>" class="w-full border rounded p-2 text-sm">
+		            <option value="">Select...</option>
+		            <?php if ($source): while ($opt = $source->fetch_object()): ?>
+		                <option value="<?= $opt->id ?>"
+		                    <?= ($rec?->{$name} == $opt->id) ? 'selected' : '' ?>>
+		                    <?= htmlspecialchars($opt->$optionLabel) ?>
+		                </option>
+		            <?php endwhile; endif; ?>
+		        </select>
+		    </div>
+		    <?php break;
+
+		case 'checkboxgroup':
+		    ?>
+		    <div class="flex items-center gap-4 border p-3 rounded">
+		        <?php foreach ($field['fields'] as $cb):
+		            $checked = !empty($rec->{$cb['name']}) ? 'checked' : ''; ?>
+		            <label class="text-sm"><?= htmlspecialchars($cb['label']) ?></label>
+		            <input type="checkbox"
+		                   name="<?= $cb['name'] ?>"
+		                   value="1" <?= $checked ?>>
+		        <?php endforeach; ?>
+		    </div>
+		    <?php break;
+
+		case 'group':
+		    ?>
+		    <div class="border p-3 rounded space-y-3 relative">
+		        <h4 class="text-sm font-semibold uppercase border-b pb-1">
+		            <?= htmlspecialchars($label) ?>
+		        </h4>
+		        <?php foreach ($field['fields'] as $subfield): ?>
+		            <?= renderFormField($subfield, $rec, $extras) ?>
+		        <?php endforeach; ?>
+		    </div>
+		    <?php break;
+
+		case 'recurring':
+		    if ($rec?->id) break; // new events only
+		    ?>
+		    <div class="border p-3 rounded space-y-3" id="recurring-wrap">
+		        <div class="flex items-center gap-2">
+		            <label class="text-sm font-medium">Recurring</label>
+		            <input type="checkbox" name="is_recurring" id="is_recurring" value="1">
+		        </div>
+		        <div id="recurring-fields" class="hidden space-y-3">
+		            <div>
+		                <label class="text-sm font-medium block mb-1">Calendar Days</label>
+		                <div class="flex flex-wrap gap-3">
+		                    <?php foreach (['Sun','Mon','Tue','Wed','Thu','Fri','Sat'] as $k => $v): ?>
+		                        <label class="flex items-center gap-1 text-sm">
+		                            <input type="checkbox" name="calendar_days[]" value="<?= $k ?>">
+		                            <?= $v ?>
+		                        </label>
+		                    <?php endforeach; ?>
+		                </div>
+		            </div>
+		            <div>
+		                <label class="text-sm font-medium block mb-1">Frequency</label>
+		                <select name="frequency" class="w-full border rounded p-2 text-sm">
+		                    <option value="">Select...</option>
+		                    <?php foreach (['Daily','Weekly','Bi-Weekly','Monthly'] as $f): ?>
+		                        <option value="<?= $f ?>"><?= $f ?></option>
+		                    <?php endforeach; ?>
+		                </select>
+		            </div>
+		        </div>
+		    </div>
+    <?php break;
+	case 'section':
+	    $gate = $field['gate'] ?? null;
+	    // superadmin gate
+	    if ($gate === 'superadmin' && ($_SESSION['admin_user_id'] ?? 0) != 1) break;
+	    ?>
+	    <div class="border-t pt-6 mb-6">
+	        <h3 class="text-lg font-semibold mb-4 text-gray-900">
+	            <?= htmlspecialchars($label) ?>
+	        </h3>
+	        <div class="space-y-4">
+	            <?php foreach ($field['fields'] as $subfield): ?>
+	                <?= renderFormField($subfield, $rec, $extras) ?>
+	            <?php endforeach; ?>
+	        </div>
+	    </div>
+	    <?php break;
+
+	case 'password':
+	    ?>
+	    <div class="flex flex-col gap-y-1">
+	        <label class="text-sm font-medium text-gray-700">
+	            <?= htmlspecialchars($label) ?>
+	        </label>
+	        <input type="text"
+	               name="<?= $name ?>"
+	               placeholder="<?= htmlspecialchars($field['placeholder'] ?? '') ?>"
+	               autocomplete="<?= $field['autocomplete'] ?? 'off' ?>"
+	               class="w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200">
+	    </div>
+    <?php break;
+
+	case 'seo':
+	    $seo = $extras['seo'] ?? null;
+	    ?>
+	    <div class="space-y-3">
+	        <div class="flex flex-col gap-y-1">
+	            <label class="text-sm font-medium text-gray-700">Meta Title</label>
+	            <input name="seo_metaTitle"
+	                   value="<?= htmlspecialchars($seo?->metaTitle ?? '', ENT_QUOTES) ?>"
+	                   class="w-full border rounded px-3 py-1.5 text-sm focus:ring focus:ring-blue-200">
+	        </div>
+	        <div class="flex flex-col gap-y-1">
+	            <label class="text-sm font-medium text-gray-700">Meta Description</label>
+	            <textarea name="seo_metaDescription"
+	                      rows="3"
+	                      class="w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200"><?= htmlspecialchars($seo?->metaDescription ?? '', ENT_QUOTES) ?></textarea>
+	        </div>
+	        <div class="flex flex-col gap-y-1">
+	            <label class="text-sm font-medium text-gray-700">Keywords</label>
+	            <input name="seo_keywords"
+	                   value="<?= htmlspecialchars($seo?->keywords ?? '', ENT_QUOTES) ?>"
+	                   class="w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200">
+	        </div>
+	        <div class="flex flex-col gap-y-1">
+	            <label class="text-sm font-medium text-gray-700">Canonical URL</label>
+	            <input name="seo_canonicalURL"
+	                   value="<?= htmlspecialchars($seo?->canonicalURL ?? '', ENT_QUOTES) ?>"
+	                   class="w-full border rounded px-3 py-1.5 text-sm focus:ring focus:ring-blue-200">
+	        </div>
+	        <div class="flex items-center gap-x-2">
+			    <input type="hidden" name="seo_noIndex" value="0">	
+	            <input type="checkbox" name="seo_noIndex" value="1"
+	                   <?= !empty($seo?->noIndex) ? 'checked' : '' ?>>
+	            <label class="text-sm text-gray-700">No Index</label>
+	        </div>
+	        <div class="flex flex-col gap-y-1">
+	            <label class="text-sm font-medium text-gray-700">Structured Data Type</label>
+	            <select name="seo_structuredDataType"
+	                    class="w-full border rounded p-2 text-sm">
+	                <?php foreach (['webpage','article','person','publication','product','organisation'] as $opt): ?>
+	                    <option value="<?= $opt ?>"
+	                        <?= ($seo?->structuredDataType === $opt) ? 'selected' : '' ?>>
+	                        <?= ucfirst($opt) ?>
+	                    </option>
+	                <?php endforeach; ?>
+	            </select>
+	        </div>
+	    </div>
+	    <?php break;    
+    }
+    return ob_get_clean();
 }

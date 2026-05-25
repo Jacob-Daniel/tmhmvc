@@ -10,6 +10,13 @@ header('Content-Type: application/json');
 $fromTs = filter_input(INPUT_GET, 'from', FILTER_VALIDATE_INT);
 $toTs   = filter_input(INPUT_GET, 'to',   FILTER_VALIDATE_INT);
 
+if (!$fromTs  || !$toTs ) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Missing fromTs or toTs parameter']);
+    exit;
+}
+
+
 // --------------------------------------------------
 // Pagination
 // --------------------------------------------------
@@ -65,6 +72,12 @@ $countResult = $countTypes
     : getList('events', $countWhere);
 
 $total = $countResult->num_rows;
+
+if (!$countResult ) {
+    http_response_code(404);
+    echo json_encode(['error' => 'News Events not found']);
+    exit;
+}
 
 $where .= " ORDER BY start_date DESC LIMIT ? OFFSET ?";
 $types   .= 'ii';

@@ -53,8 +53,10 @@ $allowed = [
     'events-slugs',
     'calendar-events',
     'page',
+    'pages-slugs',
     'site-config',
     'page-by-slug',
+    'images-by-page-id',
     'nav',    
 ];
 

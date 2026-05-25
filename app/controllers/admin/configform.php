@@ -1,12 +1,15 @@
 <?php
-$config = getRecord('config','id',1);
-$sc = (isset($config->show_cust) && $config->show_cust > 0) ? ' checked="checked"' : '';
-$ue = (isset($config->use_events) && $config->use_events > 0) ? ' checked="checked"' : '';
-$images = getlist('images', 'order by id');
+$tableConfigs = require APP_PATH . '/shared/table_configs.php';
+$formConfig   = $tableConfigs['config'];
+
+$rec = getRecord('config', 'id', 1);
+$link = getRecord('seo_links', 'entity_id', 1, "AND entity_type = 'config'");
+$seo  = $link ? getRecord('seo', 'id', $link->seo_id) : null;
 
 render('configform', [
-    'images' => $images,
-    'config' => $config,
-    'title'   => 'Settings',    
+    'rec'    => $rec,
+    'config' => $formConfig,
+    'seo'    => $seo,
+    'images' => getList('images', 'ORDER BY id'),
+    'title'  => 'Settings',
 ]);
-?>

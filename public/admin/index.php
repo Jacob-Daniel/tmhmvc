@@ -27,6 +27,7 @@ $allowedActions = [
     'gallery',
     'imageform',
     'configform',
+    'emailconfigform',
     'catlist',
     'eventlist',
     'emailform',

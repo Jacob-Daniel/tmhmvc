@@ -118,6 +118,7 @@ function initPageJS(action, params = {}) {
             initImageModal();
             break;
         case "navform":
+        case "emailconfigform":
             initForm();
             break;
         case "pagelist":

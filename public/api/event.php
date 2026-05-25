@@ -10,20 +10,18 @@ if (!$slug) {
 }
 
 try {
-    $result = getListWhere(
-        'events',
-        'WHERE slug = ? AND active = 1 LIMIT 1',
-        's',
-        [$slug]
-    );
-
-    $event = $result->fetch_assoc();
+    $event = getRecord('events','slug',$slug);
 
     if (!$event) {
         http_response_code(404);
         echo json_encode(['error' => 'Event not found']);
         exit;
     }
+
+    $seolink = getRecord('seo_links', 'entity_id', $event->id);
+    $seo     = getRecord('seo', 'id', $seolink->target_id);
+
+    $event->seo = $seo;
 
     echo json_encode($event);
 } catch (RuntimeException $e) {

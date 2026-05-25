@@ -27,6 +27,7 @@ if (!$endpoint) {
 
 $allowed = [
     'login',
+    'emailconfigform',
     'dashboard',
     'navlist',
     'navform',
