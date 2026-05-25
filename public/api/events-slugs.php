@@ -3,11 +3,7 @@ declare(strict_types=1);
 
 $catId = filter_input(INPUT_GET, 'cat_id', FILTER_VALIDATE_INT);
 
-if (!$catId) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Missing cat_id parameter']);
-    exit;
-}
+//tod check catId
 
 $where  = 'WHERE e.active = 1 AND e.is_canonical = 1';
 $types  = '';
@@ -25,7 +21,7 @@ try {
     $sql = "SELECT e.slug, c.slug AS cat 
             FROM events e
             JOIN categories c ON e.cat_id = c.id
-            {$where}";      
+            {$where}";
 
     global $db;
     if ($types) {
