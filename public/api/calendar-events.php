@@ -3,12 +3,6 @@ declare(strict_types=1);
 
 $catId = filter_input(INPUT_GET, 'cat_id', FILTER_VALIDATE_INT);
 
-if (!$catId) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Missing cat_id parameter']);
-    exit;
-}
-
 $where  = 'WHERE active = 1';
 $types  = '';
 $params = [];
