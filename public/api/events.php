@@ -9,12 +9,6 @@ $fromTs    = filter_input(INPUT_GET, 'from',   FILTER_VALIDATE_INT);
 $toTs      = filter_input(INPUT_GET, 'to',     FILTER_VALIDATE_INT);
 $catId     = filter_input(INPUT_GET, 'cat_id', FILTER_VALIDATE_INT);
 
-if (!$dateParam || !$fromTs || !$toTs || !$catId) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Missing parameter']);
-    exit;
-}
-
 // --------------------------------------------------
 // Pagination
 // --------------------------------------------------
