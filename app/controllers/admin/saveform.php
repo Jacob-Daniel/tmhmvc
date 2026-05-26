@@ -230,9 +230,9 @@ if ($id) {
 
     $message = 'Updated successfully.';
 
+    $seoFields = array_filter($_POST, fn($k) => str_starts_with($k, 'seo_'), ARRAY_FILTER_USE_KEY);
     $link = getRecord('seo_links', 'entity_id', $id, "AND entity_type = '$entityType'");
     if ($link) {
-        $seoFields = array_filter($_POST, fn($k) => str_starts_with($k, 'seo_'), ARRAY_FILTER_USE_KEY);
         if ($seoFields) {
             $seoData = array_combine(
                 array_map(fn($k) => substr($k, 4), array_keys($seoFields)),
@@ -260,7 +260,24 @@ if ($id) {
                 $seoStmt->execute();
             }
         }
-    }    
+    } else {
+        if ($seoFields) {
+            $seoData = array_combine(
+                array_map(fn($k) => substr($k, 4), array_keys($seoFields)),
+                array_values($seoFields)
+            );
+            saveLinkedRecord(
+                linkTable:   'seo_links',
+                targetTable: 'seo',
+                entityType:  $entityType,
+                entityId:    $id,
+                fields:      ['metaTitle','metaDescription','keywords','canonicalURL',
+                              'ogTitle','ogDescription','ogImage','ogImageAlt',
+                              'noIndex','structuredDataType'],
+                data:        $seoData
+            );
+        }
+    }
 
 } else {
 
