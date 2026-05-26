@@ -2,14 +2,18 @@
 declare(strict_types=1);
 
 try {
-    $result = getList('config', 'WHERE id = 1 LIMIT 1');
-    $config = $result->fetch_assoc();
+    $config = getRecord('config','id',1);
 
     if (!$config) {
         http_response_code(404);
         echo json_encode(['error' => 'Config not found']);
         exit;
     }
+
+    $link = getRecord('seo_links', 'entity_id', 1, "AND entity_type = 'organization'");
+    $seo  = getRecord('seo', 'id', $link->target_id);
+
+    $config->seo = $seo;    
 
     echo json_encode($config);
 } catch (RuntimeException $e) {

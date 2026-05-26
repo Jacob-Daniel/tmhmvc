@@ -4,8 +4,7 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 
 if (isset($_POST['password']) && $_POST['password'] !== '') {
-    // error_log("DEBUG POST=============: $_POST");
-    // print_r($_POST);
+
     $password = trim($_POST['password']);
     $confirm = trim($_POST['password_confirm']);
 
@@ -187,6 +186,15 @@ if (isset($_POST['has_active_field']) && isset($columns['active'])) {
     $data['active'] = isset($_POST['active']) ? 1 : 0;
 }
 
+$entityTypeMap = [
+    'pages'      => 'webpages',
+    'events'     => 'article',
+    'config'     => 'organization',
+    'categories' => 'categories',
+];
+
+$entityType = $entityTypeMap[$table] ?? $table;
+
 if ($id) {
 
     // UPDATE
@@ -222,6 +230,38 @@ if ($id) {
 
     $message = 'Updated successfully.';
 
+    $link = getRecord('seo_links', 'entity_id', $id, "AND entity_type = '$entityType'");
+    if ($link) {
+        $seoFields = array_filter($_POST, fn($k) => str_starts_with($k, 'seo_'), ARRAY_FILTER_USE_KEY);
+        if ($seoFields) {
+            $seoData = array_combine(
+                array_map(fn($k) => substr($k, 4), array_keys($seoFields)),
+                array_values($seoFields)
+            );
+            $allowedSeoFields = ['metaTitle','metaDescription','keywords','canonicalURL',
+                                 'ogTitle','ogDescription','ogImage','ogImageAlt',
+                                 'noIndex','structuredDataType'];
+            $seoSet = [];
+            $seoTypes = '';
+            $seoValues = [];
+            foreach ($allowedSeoFields as $field) {
+                if (isset($seoData[$field])) {
+                    $seoSet[] = "`$field` = ?";
+                    $seoTypes .= 's';
+                    $seoValues[] = $seoData[$field];
+                }
+            }
+            if ($seoSet) {
+                $seoTypes .= 'i';
+                $seoValues[] = $link->target_id;
+                $seoSql = "UPDATE seo SET " . implode(', ', $seoSet) . " WHERE id = ?";
+                $seoStmt = $db->prepare($seoSql);
+                $seoStmt->bind_param($seoTypes, ...$seoValues);
+                $seoStmt->execute();
+            }
+        }
+    }    
+
 } else {
 
     $columnsSql = implode(', ', array_map(fn($c) => "`$c`", array_keys($data)));
@@ -238,30 +278,31 @@ if ($id) {
     $insertId = $db->insert_id;
 
     $message = 'Created successfully.';
+
+    /*
+    |--------------------------------------------------------------------------
+    | SEO  
+    |--------------------------------------------------------------------------
+    */
+
+    $seoFields = array_filter($_POST, fn($k) => str_starts_with($k, 'seo_'), ARRAY_FILTER_USE_KEY);
+    if ($seoFields) {
+        $seoData = array_combine(
+            array_map(fn($k) => substr($k, 4), array_keys($seoFields)),
+            array_values($seoFields)
+        );
+        saveLinkedRecord(
+            linkTable:   'seo_links',
+            targetTable: 'seo',
+            entityType:  $table,
+            entityId:    $insertId,
+            fields:      ['metaTitle','metaDescription','keywords','canonicalURL',
+                          'ogImageAlt','noIndex','structuredDataType'],
+            data:        $seoData
+        );
+    }
 }
 
-/*
-|--------------------------------------------------------------------------
-| SEO  (before ISR so revalidation picks up fresh meta)
-|--------------------------------------------------------------------------
-*/
-
-$seoFields = array_filter($_POST, fn($k) => str_starts_with($k, 'seo_'), ARRAY_FILTER_USE_KEY);
-if ($seoFields) {
-    $seoData = array_combine(
-        array_map(fn($k) => substr($k, 4), array_keys($seoFields)),
-        array_values($seoFields)
-    );
-    saveLinkedRecord(
-        linkTable:   'seo_links',
-        targetTable: 'seo',
-        entityType:  $table,
-        entityId:    $insertId,
-        fields:      ['metaTitle','metaDescription','keywords','canonicalURL',
-                      'ogImageAlt','noIndex','structuredDataType'],
-        data:        $seoData
-    );
-}
 /*
 |--------------------------------------------------------------------------
 | ISR Revalidation

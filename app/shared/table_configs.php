@@ -11,10 +11,22 @@ return [
             ['type' => 'text', 'name' => 'comp_name',    'label' => 'Heading'],
             ['type' => 'text', 'name' => 'site_tagline',  'label' => 'Tagline'],
             ['type' => 'text', 'name' => 'domain',        'label' => 'Domain'],
+            ['type' => 'section', 'label' => 'Address', 'fields' => [
+                ['type' => 'text', 'name' => 'address',   'label' => 'Address'],
+                ['type' => 'text', 'name' => 'address_line_2', 'label' => 'Address'],
+                ['type' => 'text', 'name' => 'postcode',   'label' => 'Postcode'],
+                ['type' => 'text', 'name' => 'town',   'label' => 'Town'],
+                ['type' => 'text', 'name' => 'tel',   'label' => 'Tel'],
+                ['type' => 'text', 'name' => 'tel2',   'label' => 'Tel'],
+                ['type' => 'text', 'name' => 'mobile',   'label' => 'Mobile'],
+            ]],            
             ['type' => 'section', 'label' => 'SEO', 'fields' => [
                 ['type' => 'seo'],
             ]],
             // Sidebar
+            ['type' => 'section', 'sidebar' => true, 'fields' => [
+                ['type' => 'image', 'name' => 'imagepath', 'label' => 'Select Main Image','sidebar' => true],
+            ]],            
             ['type' => 'section', 'label' => 'Social', 'sidebar' => true, 'fields' => [
                 ['type' => 'text', 'name' => 'fb_url',   'label' => 'Facebook URL',  'sidebar' => true],
                 ['type' => 'text', 'name' => 'inst_url', 'label' => 'Instagram URL', 'sidebar' => true],

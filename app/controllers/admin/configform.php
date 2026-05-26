@@ -3,8 +3,8 @@ $tableConfigs = require APP_PATH . '/shared/table_configs.php';
 $formConfig   = $tableConfigs['config'];
 
 $rec = getRecord('config', 'id', 1);
-$link = getRecord('seo_links', 'entity_id', 1, "AND entity_type = 'config'");
-$seo  = $link ? getRecord('seo', 'id', $link->seo_id) : null;
+$link = getRecord('seo_links', 'entity_id', 1, "AND entity_type = 'organization'");
+$seo  = $link ? getRecord('seo', 'id', $link->target_id) : null;
 
 render('configform', [
     'rec'    => $rec,

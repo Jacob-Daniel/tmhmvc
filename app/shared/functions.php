@@ -1640,7 +1640,7 @@ function renderFormField(array $field, ?object $rec, array $extras = []): string
 	            <label class="text-sm font-medium text-gray-700">Structured Data Type</label>
 	            <select name="seo_structuredDataType"
 	                    class="w-full border rounded p-2 text-sm">
-	                <?php foreach (['webpage','article','person','publication','product','organisation'] as $opt): ?>
+	                <?php foreach (['webpage','article','person','publication','product','organization'] as $opt): ?>
 	                    <option value="<?= $opt ?>"
 	                        <?= ($seo?->structuredDataType === $opt) ? 'selected' : '' ?>>
 	                        <?= ucfirst($opt) ?>
