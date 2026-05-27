@@ -110,6 +110,7 @@ function initPageJS(action, params = {}) {
     initAjaxForms();
     switch (action) {
         case "pageform":
+        case "bannerform":
         case "catform":
         case "eventform":
         case "configform":
@@ -123,6 +124,7 @@ function initPageJS(action, params = {}) {
             break;
         case "pagelist":
         case "catlist":
+        case "bannerlist":
         case "navlist":
         case "eventlist":
         case "subscriberlist":

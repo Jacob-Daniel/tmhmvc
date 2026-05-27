@@ -13,7 +13,14 @@
         <div>
             <?php draw_pager('eventlist', $pageinfo['pages'], $pageinfo['page']); ?>
         </div>
-            
+        <div>
+        <label for="active">Active</label> 
+        <input type="checkbox" name="active" data-filter="active" value="1">               
+        </div>
+        <select data-filter="is_canonical" class="px-3 py-1.5 border rounded-md text-sm">
+            <option value="">All</option>
+            <option value="1">Canonical</option>
+        </select>               
         <input 
             type="text" 
             id="psch" 

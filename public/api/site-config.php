@@ -13,8 +13,18 @@ try {
     $link = getRecord('seo_links', 'entity_id', 1, "AND entity_type = 'organization'");
     $seo  = getRecord('seo', 'id', $link->target_id);
 
-    $config->seo = $seo;    
+    $config->seo = $seo;  
 
+    if (!empty($config->donate_amounts)) {
+
+        $config->donate = [
+            'title'   => $config->donate_title ?? 'Please Donate',
+            'desc'    => $config->donate_desc ?? '',
+            'amounts' => array_map('trim', explode(',', $config->donate_amounts)),
+        ];
+
+        unset($config->donate_title, $config->donate_desc, $config->donate_amounts);
+    }
     echo json_encode($config);
 } catch (RuntimeException $e) {
     http_response_code(500);

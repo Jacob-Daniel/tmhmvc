@@ -22,6 +22,8 @@ $allowedActions = [
     'dashboard',
     'pagelist',
     'pageform',
+    'bannerlist',
+    'bannerform',
     'userform',
     'catform',
     'gallery',

@@ -9,7 +9,6 @@ export function initList(params = {}) {
     const targetId = searchInput.dataset.target || "restable";
     const restab = document.getElementById(targetId);
     if (!restab) return;
-
     async function fetchList() {
         const table = encodeURIComponent(searchInput!.dataset.table || "");
         const field = encodeURIComponent(searchInput!.dataset.field || "");
@@ -19,15 +18,25 @@ export function initList(params = {}) {
 
         // Collect all data-filter elements within the same fieldset/container
         const container = searchInput!.closest("fieldset") ?? document;
-        const filterEls =
-            container.querySelectorAll<HTMLElement>("[data-filter]");
+        const filterEls = container.querySelectorAll<
+            HTMLElement | HTMLInputElement | HTMLSelectElement
+        >("[data-filter]");
         const extraParams = new URLSearchParams();
         filterEls.forEach((el) => {
-            const filterField = el.dataset.filter!;
+            const filterField = el.dataset.filter;
+
+            if (!filterField) return;
+
             const value = (el as HTMLInputElement | HTMLSelectElement).value;
             if (filterField && value !== "") {
                 console.log(value, "value filter", filterField);
                 extraParams.set(filterField, value);
+                if (
+                    filterField === "active" &&
+                    el instanceof HTMLInputElement
+                ) {
+                    el.value = el.checked ? "0" : "1";
+                }
             }
         });
 

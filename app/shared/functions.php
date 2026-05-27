@@ -1262,7 +1262,7 @@ function buildListQuery(array $config): array
     $extraWhere   = $config['extra_where']   ?? '';
     $drillId      = $config['drill_id']      ?? 0;
     $drillField   = $config['drill_field']   ?? '';
-    $whereFields  = $config['where_fields']  ?? [];   // ← NEW
+    $whereFields  = $config['where_fields']  ?? [];  
 
     $page   = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
     $offset = ($page - 1) * $perPage;

@@ -26,7 +26,12 @@ return [
             // Sidebar
             ['type' => 'section', 'sidebar' => true, 'fields' => [
                 ['type' => 'image', 'name' => 'imagepath', 'label' => 'Select Main Image','sidebar' => true],
-            ]],            
+            ]], 
+            ['type' => 'section', 'label' => 'Donate', 'sidebar' => true, 'fields' => [
+                ['type' => 'text', 'name' => 'donate_title',   'label' => 'Donate Title',  'sidebar' => true],
+                ['type' => 'text', 'name' => 'donate_desc', 'label' => 'Donate Description', 'sidebar' => true],
+                ['type' => 'text', 'name' => 'donate_amounts',   'label' => 'Donate Amounts',   'sidebar' => true],
+            ]],
             ['type' => 'section', 'label' => 'Social', 'sidebar' => true, 'fields' => [
                 ['type' => 'text', 'name' => 'fb_url',   'label' => 'Facebook URL',  'sidebar' => true],
                 ['type' => 'text', 'name' => 'inst_url', 'label' => 'Instagram URL', 'sidebar' => true],
@@ -70,7 +75,7 @@ return [
         'table' => 'events',
         'form'    => 'eventform',
         'list'    => 'eventlist',
-        'fields'  => ['slug', 'title', 'cat_id'],
+        'fields'  => ['slug', 'title', 'cat_id','is_canonical','active'],
         'headers' => ['Row', 'Title', 'Slug', 'Active', 'View/Edit', 'Delete'],
         'columns' => [
             ['type' => 'counter'],
@@ -210,4 +215,73 @@ return [
             ['type' => 'action',    'target' => 'delete', 'center' => true],
         ],
     ], 
+    'banners' => [
+        'table'   => 'banners',
+        'form'    => 'bannerform',
+        'list'    => 'bannerlist',
+        'headers' => ['ID', 'Page', 'Title', 'Seq', 'Active', 'Edit', 'Delete'],
+        'columns' => [
+            ['type' => 'text',      'field' => 'id'],
+            ['type' => 'text',      'field' => 'page_id'],
+            ['type' => 'editfield', 'field' => 'title',    'width' => '200px'],
+            ['type' => 'editfield', 'field' => 'sequence'],
+            ['type' => 'flip',      'field' => 'active',   'center' => true],
+            ['type' => 'action',    'target' => 'edit',    'center' => true],
+            ['type' => 'action',    'target' => 'delete',  'center' => true],
+        ],
+    ],
+
+    'bannerform' => [
+        'table'  => 'banners',
+        'form'   => 'bannerform',
+        'list'   => 'bannerlist',
+        'word'   => 'Banner Image',
+        'fields' => [
+            // Main
+            ['type' => 'text',    'name' => 'title', 'label' => 'Title'],
+            ['type' => 'text',    'name' => 'alt',   'label' => 'Alt Text'],
+            ['type' => 'text',    'name' => 'link',  'label' => 'Link (optional)'],
+            // Sidebar
+            ['type' => 'select',  'name' => 'page_id',  'label' => 'Page',     'source' => 'pages',    'optionLabel' => 'title', 'sidebar' => true],
+            ['type' => 'number',  'name' => 'sequence', 'label' => 'Sequence', 'sidebar' => true],
+            ['type' => 'checkbox','name' => 'active',   'label' => 'Active',   'sidebar' => true],
+            ['type' => 'image',   'name' => 'imagepath','label' => 'Image',    'sidebar' => true],
+        ],
+        'actions' => ['save', 'back', 'new', 'refresh', 'delete'],
+    ],
+    'intro_panels' => [
+        'table'   => 'intro_panels',
+        'form'    => 'intropanelform',
+        'list'    => 'intropanellist',
+        'headers' => ['ID', 'Title', 'Category', 'Seq', 'Active', 'Edit', 'Delete'],
+        'columns' => [
+            ['type' => 'text',      'field' => 'id'],
+            ['type' => 'editfield', 'field' => 'title',    'width' => '200px'],
+            ['type' => 'text',      'field' => 'cat_id'],
+            ['type' => 'editfield', 'field' => 'sequence'],
+            ['type' => 'flip',      'field' => 'active',   'center' => true],
+            ['type' => 'action',    'target' => 'edit',    'center' => true],
+            ['type' => 'action',    'target' => 'delete',  'center' => true],
+        ],
+    ],
+
+    'intropanelform' => [
+        'table'  => 'intro_panels',
+        'form'   => 'intropanelform',
+        'list'   => 'intropanellist',
+        'word'   => 'Intro Panel',
+        'fields' => [
+            // Main
+            ['type' => 'text',    'name' => 'title',   'label' => 'Title'],
+            ['type' => 'textarea','name' => 'content', 'label' => 'Description'],
+            ['type' => 'text',    'name' => 'link',    'label' => 'Page Link'],
+            // Sidebar
+            ['type' => 'select',  'name' => 'cat_id',   'label' => 'Category', 'source' => 'categories', 'optionLabel' => 'title', 'sidebar' => true],
+            ['type' => 'text',    'name' => 'bg',       'label' => 'Background Colour (hex)', 'sidebar' => true],
+            ['type' => 'number',  'name' => 'sequence', 'label' => 'Sequence',  'sidebar' => true],
+            ['type' => 'checkbox','name' => 'active',   'label' => 'Active',    'sidebar' => true],
+            ['type' => 'image',   'name' => 'imagepath','label' => 'Image',     'sidebar' => true],
+        ],
+        'actions' => ['save', 'back', 'new', 'refresh', 'delete'],
+    ],    
 ];

@@ -31,6 +31,8 @@ $allowed = [
     'dashboard',
     'navlist',
     'navform',
+    'bannerlist',
+    'bannerform',
     'userform',
     'pagelist',
     'pageform',

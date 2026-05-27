@@ -7,6 +7,7 @@
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="eventlist">Events</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="catlist">Categories</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="navlist">Navigation</li>';
+	echo '<li class="nav-item cursor-pointer text-sm" data-route="bannerlist">Banners</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="emaillist">Emails</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="massmailform">Send Email</li>';
 	echo '<li class="nav-item cursor-pointer text-sm" data-route="subscriberlist">Subscribers</li>';

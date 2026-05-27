@@ -21,7 +21,10 @@ if ((int)($_GET['item'] ?? 0) > 0) {
         'table'         => 'events',
         'search_fields' => ['title', 'summary', 'slug','content'],
         'order'         => 'ORDER BY id DESC',
-        'extra_where'   => 'AND active=1',
+        'where_fields'  => [
+            'is_canonical'    => null,
+            'active'    => 1,
+        ],        
         'drill_id'      => (int)($_GET['item'] ?? 0),
         'drill_field'   => 'cat_id',
     ]);

@@ -56,8 +56,10 @@ $allowed = [
     'pages-slugs',
     'site-config',
     'page-by-slug',
-    'images-by-page-id',
     'nav',    
+    'latest-events',    
+    'banners',    
+    'home-page',    
 ];
 
 if (!in_array($endpoint, $allowed)) {

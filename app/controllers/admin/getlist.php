@@ -28,6 +28,6 @@ $result = buildListQuery([
     'where_fields'  => $whereFields,   // dynamic, driven by URL params    
 ]);
 
-error_log("getlist returning: " . $result['items']->num_rows . " rows");
+// error_log("getlist returning: " . $result['items']->num_rows . " rows");
 
 echo buildTable($result['items'], $config);
