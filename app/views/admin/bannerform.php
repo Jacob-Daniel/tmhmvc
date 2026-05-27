@@ -1,2 +1,2 @@
 <?php render('components/imageModal', ['images' => $images]); ?>
-<?= buildForm($rec, $config); ?>
+<?= buildForm($rec, $config,['pages' => $pages]); ?>

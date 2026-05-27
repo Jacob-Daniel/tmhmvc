@@ -7,9 +7,11 @@ $page         = filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1;
 $_SESSION['page'] = $page;
 
 $rec = $itemId ? getRecord('banners', 'id', $itemId) : null;
+$pages = getList('pages','order by slug ASC');
 
-render('pageform', [
+render('bannerform', [
     'rec'    => $rec,
     'config' => $config,
+    'pages' => $pages,
     'images' => getList('images', ' ORDER BY id'),
 ]);
