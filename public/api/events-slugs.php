@@ -18,7 +18,7 @@ if ($catId) {
 $where .= ' ORDER BY e.start_date DESC';
 
 try {
-    $sql = "SELECT e.slug, c.slug AS cat 
+    $sql = "SELECT e.slug, e.updated, e.created, e.title, c.slug AS cat, c.id AS catId 
             FROM events e
             JOIN categories c ON e.cat_id = c.id
             {$where}";
