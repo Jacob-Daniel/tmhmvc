@@ -10,10 +10,10 @@ if (!$id || !$table) {
     exit;
 }
 
-$allowedTables = ['pages', 'categories', 'events', 'navigation', 'images','email_groups','emails','subscribers'];
+$allowedTables = ['pages', 'categories', 'events', 'banners', 'navigation', 'images','email_groups','emails','subscribers'];
 
 if (!in_array($table, $allowedTables, true)) {
-    echo json_encode(['success' => false, 'error' => 'Invalid table.']);
+    echo json_encode(['success' => false, 'error' => 'Invalide allowed table.']);
     exit;
 }
 
