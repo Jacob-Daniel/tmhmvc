@@ -144,8 +144,6 @@ export function closeImageModal() {
    HANDLE IMAGE SELECTION
 -------------------------------------------------- */
 export function handleImageSelect(filePath: string) {
-    console.log(filePath, "dasdfsdf");
-
     if (!currentFieldId) return;
 
     const input = document.getElementById(
@@ -163,8 +161,7 @@ export function handleImageSelect(filePath: string) {
             currentImgId,
         ) as HTMLImageElement | null;
 
-        const src = `/images/thumbs/200/${filePath}`;
-
+        const src = window.CONFIG.imgThumb150BaseUrl + "/" + filePath;
         if (!img && box) {
             img = document.createElement("img");
             img.id = currentImgId;

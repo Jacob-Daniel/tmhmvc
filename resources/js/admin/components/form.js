@@ -1,6 +1,6 @@
 import { initTinyMCE } from "./tinymce.js";
 import { initFlatpickr } from "./flatpickr.js";
-import { initImageModal } from "./imageModalNew";
+import { initImageModal } from "./imageModal";
 
 export function initForm() {
     setTimeout(() => {

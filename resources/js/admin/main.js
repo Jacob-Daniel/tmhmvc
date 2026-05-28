@@ -1,6 +1,7 @@
 import "../../css/admin/main.css";
+import "./types";
 import { showToast } from "./components/uiMessages";
-import { initImageModal, openImageModal } from "./components/imageModalNew.ts";
+import { initImageModal, openImageModal } from "./components/imageModal.ts";
 import { showMessage } from "./components/uiMessages";
 // import flatpickr from "flatpickr";
 import { initGallery } from "./components/gallery";

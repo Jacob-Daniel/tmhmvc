@@ -23,6 +23,11 @@ export type DataModuleContainer = HTMLElement & {
 // Extend window
 declare global {
     interface Window {
+        CONFIG: {
+            baseUrl: string;
+            imgBaseUrl: string;
+            imgThumb150BaseUrl: string;
+        };
         loadContent: (
             action: string,
             item?: string | null,

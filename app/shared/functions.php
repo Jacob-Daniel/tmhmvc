@@ -952,8 +952,8 @@ function renderChooseImage(array $opts = []): void
 
     $src = '';
     if ($existingPath) {
-        $src = file_exists(PUBLIC_UPLOADS_PATH . '/thumbs/200/' . $existingPath)
-            ? BASE_URL_IMG_DIR . '/thumbs/200/' . $existingPath
+        $src = file_exists(PUBLIC_UPLOADS_THUMBS_150_PATH . '/' . $existingPath)
+            ? BASE_URL_IMG_THUMB_150_DIR . '/' . $existingPath
             : BASE_URL_IMG_DIR .'/'. $existingPath;
     }
     ?>
@@ -1189,7 +1189,7 @@ function cleanupOrphanImages(mysqli $db, bool $dryRun = false): array
         $base,
         $base . 'facebook/',
         $base . 'twitter/',
-        $base . 'thumbs/200/',
+        $base . 'thumbs/150/',
         $base . 'thumbs/60/',
         $base . 'webp/',
     ];
@@ -1348,6 +1348,7 @@ function buildForm(?object $rec, array $config, array $extras = []): string
     $list   = $config['list'];
     $id     = $rec->id ?? null;
     $title  = $rec->title ?? '';
+    $imagepath  = $rec->imagepath ?? '';
 
     $mainFields    = array_filter($config['fields'], fn($f) => empty($f['sidebar']));
     $sidebarFields = array_filter($config['fields'], fn($f) => !empty($f['sidebar']));
@@ -1360,6 +1361,7 @@ function buildForm(?object $rec, array $config, array $extras = []): string
         <input type="hidden" name="idfield"          value="id">
         <input type="hidden" name="item_word"        value="<?= htmlspecialchars($word) ?>">
         <input type="hidden" name="has_active_field" value="1">
+		<input type="hidden" id="imagepath" name="imagepath" value="<?= $imagepath ??''?>"/>
 
         <fieldset class="grid grid-cols-1 md:grid-cols-12 gap-6 border rounded p-3">
             <legend class="font-semibold text-gray-700">

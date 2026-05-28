@@ -14,9 +14,9 @@ function buildImageModalTable(mysqli_result $images): string
         $alt       = htmlspecialchars($image->alt ?? '', ENT_QUOTES);
         $title     = htmlspecialchars($image->title ?? '', ENT_QUOTES);
 
-        $thumbPath = PUBLIC_UPLOADS_PATH . '/thumbs/200/' . $image->imagepath;
+        $thumbPath = PUBLIC_UPLOADS_THUMBS_150_PATH . '/' . $image->imagepath;
         $src = file_exists($thumbPath)
-            ? BASE_URL_IMG_DIR . '/thumbs/200/' . $image->imagepath
+            ? BASE_URL_IMG_THUMB_150_DIR . '/' . $image->imagepath
             : BASE_URL_IMG_DIR . '/' . $image->imagepath;
         $safeSrc = htmlspecialchars($src, ENT_QUOTES);
         ?>
