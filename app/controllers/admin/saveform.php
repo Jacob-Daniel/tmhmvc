@@ -334,6 +334,7 @@ if ($table === 'events' && !empty($data['cat_id'])) {
 $isrPathMap = [
     'pages'      => ['/', '/'. ($data['slug'] ?? '')],
     'categories' => ['/', '/whats-on'],
+    'banners' => ['/', '/hire'],
     'events'     => ['/', '/whats-on/' . $catSlug . '/' . ($data['slug'] ?? '')],
     'navigation' => ['/','/whats-on','/our-story','/donate','/hire','/subscribe','/find-us'],
 ];

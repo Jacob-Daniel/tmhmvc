@@ -95,8 +95,10 @@ if ($table === 'events' && !empty($meta->slug)) {
     $cat = getRecord('categories', 'id', $meta->cat_id);
     $catSlug = $cat->slug ?? '';
 }
+print_r($meta);
 $isrPathMap = [
     'pages'      => fn(object $meta) => ['/', '/pages/' . $meta->slug],
+    'banners'      => fn(object $meta) => ['/', '/pages/' . $meta->slug],
     'categories' => fn(object $meta) => ['/', '/categories/' . $meta->slug],
     'events'   => fn(object $meta) => ['/', '/whats-on/'.$catSlug.'/' . $meta->slug],
     'navigation' => fn(object $meta) => ['/'],
