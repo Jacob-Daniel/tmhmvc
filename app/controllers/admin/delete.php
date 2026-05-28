@@ -13,7 +13,7 @@ if (!$id || !$table) {
 $allowedTables = ['pages', 'categories', 'events', 'banners', 'navigation', 'images','email_groups','emails','subscribers'];
 
 if (!in_array($table, $allowedTables, true)) {
-    echo json_encode(['success' => false, 'error' => 'Invalide allowed table.']);
+    echo json_encode(['success' => false, 'error' => 'Invalid allowed table.']);
     exit;
 }
 
