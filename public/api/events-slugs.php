@@ -33,14 +33,19 @@ try {
         $result = $db->query($sql);
     }
 
+
     $slugs = [];
     while ($row = $result->fetch_assoc()) {
+        //Convert timestamp to ISO 8601 string
+        $created = $row['created']? gmdate('c', (int)$row['created']): null;
+        $updated = $row['updated']? gmdate('c', (int)$row['updated']): null;
+        
         $slugs[] = [
             'slug' => $row['slug'],
             'cat'  => $row['cat'],
             'title'  => $row['title'],
-            'updated'  => $row['updated'],
-            'created'  => $row['created'],
+            'updated'  => $updated,
+            'created'  => $created,
             'catId'  => $row['catId'],
         ];
     }
