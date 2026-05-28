@@ -38,6 +38,10 @@ try {
         $slugs[] = [
             'slug' => $row['slug'],
             'cat'  => $row['cat'],
+            'title'  => $row['title'],
+            'updated'  => $row['updated'],
+            'created'  => $row['created'],
+            'catId'  => $row['catId'],
         ];
     }
 
