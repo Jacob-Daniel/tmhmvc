@@ -94,7 +94,7 @@ return [
         'saveAction' => '/admin/api/saveeventform',
         'fields' => [
             // Main column
-            ['type' => 'text',     'name' => 'title',   'label' => 'Title'],
+            ['type' => 'text',     'name' => 'title',   'label' => 'Title','required'=>true],
             ['type' => 'text',     'name' => 'slug',    'label' => 'URL Slug'],
             ['type' => 'textarea', 'name' => 'summary', 'label' => 'Summary', 'rows' => 2],
             ['type' => 'richtext', 'name' => 'content', 'label' => 'Content'],
@@ -106,7 +106,7 @@ return [
                 ['name' => 'active',   'label' => 'Active'],
                 ['name' => 'featured', 'label' => 'Featured'],
             ]],
-            ['type' => 'select',   'name' => 'cat_id',    'label' => 'Primary Category', 'source' => 'categories', 'optionLabel' => 'slug', 'sidebar' => true],
+            ['type' => 'select',   'name' => 'cat_id',    'label' => 'Primary Category', 'source' => 'categories', 'optionLabel' => 'slug', 'sidebar' => true, 'required'=> true],
             ['type' => 'number',   'name' => 'price',     'label' => 'Price',            'sidebar' => true],
             ['type' => 'image',    'name' => 'imagepath', 'label' => 'Select Main Image','sidebar' => true],
             ['type' => 'group',    'label' => 'Calendar', 'sidebar' => true, 'fields' => [
@@ -146,7 +146,7 @@ return [
         'layout' => 'sidebar', // sidebar | full
         'fields' => [
             // main column
-            ['type' => 'text',     'name' => 'title',   'label' => 'Title'],
+            ['type' => 'text',     'name' => 'title',   'label' => 'Title', 'required'=>true],
             ['type' => 'text',     'name' => 'slug',     'label' => 'Slug', 'hint' => 'SEO-friendly URL (e.g. /about-us)'],
             ['type' => 'richtext', 'name' => 'content',  'label' => 'Page Content'],
             ['type' => 'section', 'label' => 'SEO', 'fields' => [
@@ -238,7 +238,7 @@ return [
         'word'   => 'Banner Image',
         'fields' => [
             // Main
-            ['type' => 'text',    'name' => 'title', 'label' => 'Title'],
+            ['type' => 'text',    'name' => 'title', 'label' => 'Title','required'=>true],
             ['type' => 'text',    'name' => 'alt',   'label' => 'Alt Text'],
             ['type' => 'text',    'name' => 'link',  'label' => 'Link (optional)'],
             // Sidebar
@@ -272,7 +272,7 @@ return [
         'word'   => 'Intro Panel',
         'fields' => [
             // Main
-            ['type' => 'text',    'name' => 'title',   'label' => 'Title'],
+            ['type' => 'text',    'name' => 'title',   'label' => 'Title','required'=>true],
             ['type' => 'textarea','name' => 'content', 'label' => 'Description'],
             ['type' => 'text',    'name' => 'link',    'label' => 'Page Link'],
             // Sidebar

@@ -140,6 +140,14 @@ foreach ($_POST as $key => $value) {
     ) {
         continue;
     }    
+    
+    if (
+        $id &&
+        $key === 'password' &&
+        $val !== ''
+    ) {
+        $val = password_hash($val, PASSWORD_DEFAULT);
+    }    
 
     if (preg_match('/int/i', $colType)) {
         // INT column

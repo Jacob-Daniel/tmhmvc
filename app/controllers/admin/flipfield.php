@@ -16,9 +16,10 @@ $allowedTables = [
     'pages'      => ['featured', 'active'],
     'categories' => ['featured', 'active'],
     'products'   => ['featured', 'active'],
+    'events'   => ['featured', 'active'],
+    'banners'   => ['featured', 'active'],
     'navigation' => ['active'],
 ];
-
 if (!isset($allowedTables[$table])) {
     echo json_encode(['message' => 'Invalid table.', 'type' => 'error']);
     exit;

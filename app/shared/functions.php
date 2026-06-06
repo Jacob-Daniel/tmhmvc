@@ -1345,6 +1345,7 @@ function buildForm(?object $rec, array $config, array $extras = []): string
     $table  = $config['table'];
     $word   = $config['word'] ?? $table;
     $form   = $config['form'];
+    $saveAction  = $config['saveAction'] ?? '/admin/api/saveform';
     $list   = $config['list'];
     $id     = $rec->id ?? null;
     $title  = $rec->title ?? '';
@@ -1354,7 +1355,7 @@ function buildForm(?object $rec, array $config, array $extras = []): string
     $sidebarFields = array_filter($config['fields'], fn($f) => !empty($f['sidebar']));
 
     ob_start(); ?>
-    <form action="/admin/api/saveform" method="post"
+    <form action="<?= $saveAction ?>" method="post"
           enctype="multipart/form-data" data-ajax id="<?= $form ?>">
         <input type="hidden" name="edit"             value="<?= $id ?>">
         <input type="hidden" name="table"            value="<?= $table ?>">
@@ -1401,6 +1402,7 @@ function buildForm(?object $rec, array $config, array $extras = []): string
 function renderFormField(array $field, ?object $rec, array $extras = []): string
 {
     $name  = $field['name'];
+	$required = !empty($field['required']) ? 'required': '';
     $label = $field['label'] ?? $name;
     $hint  = $field['hint']  ?? '';
     $value = $rec ? stripslashes(htmlspecialchars($rec->$name ?? '', ENT_QUOTES)) : '';
@@ -1418,7 +1420,7 @@ function renderFormField(array $field, ?object $rec, array $extras = []): string
                     <?= htmlspecialchars($label) ?>
                     <?php if ($hint): ?><span class="font-normal text-gray-400"><?= htmlspecialchars($hint) ?></span><?php endif; ?>
                 </label>
-                <input name="<?= $name ?>" id="<?= $name ?>"
+                <input name="<?= $name ?>" id="<?= $name ?>" <?= $required ?>
                        value="<?= $value ?>"
                        class="<?= $inputClass ?>">
             </div>
@@ -1447,6 +1449,7 @@ function renderFormField(array $field, ?object $rec, array $extras = []): string
             $checked = !empty($rec->$name) ? 'checked' : '';
             ?>
             <div class="flex gap-y-1 items-center gap-x-2 justify-start border p-2 rounded-sm">
+		        <input type="hidden" name="<?= $name ?>" value="0">
                 <label for="<?= $name ?>"><?= htmlspecialchars($label) ?></label>
                 <input type="checkbox" id="<?= $name ?>" name="<?= $name ?>" value="1" <?= $checked ?>>
             </div>
@@ -1473,7 +1476,7 @@ function renderFormField(array $field, ?object $rec, array $extras = []): string
 		        <input type="number"
 		               name="<?= $name ?>"
 		               step="any"
-		               value="<?= $value ?>"
+		               value="<?= $value ? $value : 0?>"
 		               class="border rounded px-2 py-1 text-sm">
 		    </div>
 		    <?php break;
@@ -1482,7 +1485,7 @@ function renderFormField(array $field, ?object $rec, array $extras = []): string
 		    ?>
 		    <div class="flex flex-col gap-1">
 		        <label class="text-sm"><?= htmlspecialchars($label) ?></label>
-		        <input name="<?= $name ?>"
+		        <input name="<?= $name ?>" <?= $required ?>
 		               class="datepickr border rounded px-2 py-1 text-sm"
 		               value="<?= $value ?>">
 		    </div>
@@ -1501,10 +1504,11 @@ function renderFormField(array $field, ?object $rec, array $extras = []): string
 		case 'select':
 		    $source     = $extras[$field['source']] ?? null;
 		    $optionLabel = $field['optionLabel'] ?? 'name';
+		    $required = $field['required'] ? 'required' : '';
 		    ?>
 		    <div class="border p-3 rounded">
 		        <label class="block text-sm font-medium mb-2"><?= htmlspecialchars($label) ?></label>
-		        <select name="<?= $name ?>" class="w-full border rounded p-2 text-sm">
+		        <select name="<?= $name ?>" class="w-full border rounded p-2 text-sm" <?= $required ?>>
 		            <option value="">Select...</option>
 		            <?php if ($source): while ($opt = $source->fetch_object()): ?>
 		                <option value="<?= $opt->id ?>"

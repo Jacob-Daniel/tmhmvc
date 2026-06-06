@@ -100,10 +100,11 @@ if ($isRecurring) {
         'Bi-Weekly' => 1209600,
         'Monthly'   => 2592000,
     ];
+    error_log($startDateRaw . ' ============ loopdate');
+    error_log($endDateRaw . ' =========== loop end date');
 
-    $loopDate = convertDate($startDateRaw);
-    $endLoop  = convertDate($endDateRaw);
-
+    $loopDate = convertDate($startDateRaw,'-');
+    $endLoop  = convertDate($endDateRaw,'-');
     if (!$loopDate || !$endLoop) {
         echo json_encode(['type' => 'error', 'message' => 'Invalid dates.']);
         exit;
