@@ -13,8 +13,9 @@ try {
     $event = getRecord('events','slug',$slug);
 
     if (!$event) {
+        error_log("Slug not found: $slug");
         http_response_code(404);
-        echo json_encode(['error' => 'Event not found']);
+        echo json_encode(['error' => 'Event not found. With slug: '.$slug]);
         exit;
     }
 

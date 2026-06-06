@@ -39,7 +39,7 @@ async function loadContent(action, item, delitem, page, condition = "") {
         page: page ?? "",
         condition: condition ?? "",
     }).toString();
-    console.log(query);
+    // console.log(query);
     const url = `${baseUrl}/admin/index.php?${query}`;
 
     try {

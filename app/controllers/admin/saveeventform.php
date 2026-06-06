@@ -35,15 +35,14 @@ function saveOccurrence(array $data, bool $isCanonical, string $canonicalSlug): 
 
     $sql = sprintf(
         "INSERT INTO events 
-            (active, price, featured, author, created, slug, canonical_slug, 
+            (active, price, featured, created, slug, canonical_slug, 
              is_canonical, imagepath, title, summary, content, cat_id, 
              frequency, start_date, end_date, start_time, end_time, recurring, metad, metak)
-         VALUES (%d,%0.2f,%d,%d,%d,'%s','%s',%d,'%s','%s','%s','%s',%d,'%s',%d,%d,'%s','%s',%d,'%s','%s')",
+         VALUES (%d,%0.2f,%d,%d,'%s','%s',%d,'%s','%s','%s','%s',%d,'%s',%d,%d,'%s','%s',%d,'%s','%s')",
         (int)$data['active'],
         (float)($data['price'] ?? 0),
         (int)($data['featured'] ?? 0),
-        (int)$data['author'],
-        (int)$data['created'],
+        (int)time(),
         $db->real_escape_string($slug),
         $db->real_escape_string($canonicalSlug),
         $isCanonical ? 1 : 0,
@@ -100,8 +99,6 @@ if ($isRecurring) {
         'Bi-Weekly' => 1209600,
         'Monthly'   => 2592000,
     ];
-    error_log($startDateRaw . ' ============ loopdate');
-    error_log($endDateRaw . ' =========== loop end date');
 
     $loopDate = convertDate($startDateRaw,'-');
     $endLoop  = convertDate($endDateRaw,'-');
