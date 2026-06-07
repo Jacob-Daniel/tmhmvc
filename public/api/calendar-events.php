@@ -1,20 +1,24 @@
 <?php
 declare(strict_types=1);
 
-$catId = filter_input(INPUT_GET, 'cat_id', FILTER_VALIDATE_INT);
-
+$category = filter_input(INPUT_GET, 'category', FILTER_SANITIZE_SPECIAL_CHARS);
+$midnight = strtotime('midnight');
 $where  = 'WHERE active = 1';
 $types  = '';
 $params = [];
 
-if ($catId) {
-    $where .= ' AND cat_id = ?';
-    $types .= 'i';
-    $params[] = $catId;
+if ($category) {
+    $where .= ' AND cat_id = (SELECT id FROM categories WHERE slug = ?)';
+    $types .= 's';
+    $params[] = $category;
 }
 
-$where .= ' ORDER BY start_date ASC';
+$midnightUTC = strtotime('today midnight UTC');
+$where  .= ' AND start_date >= ?';
+$types  .= 'i';
+$params[] = $midnightUTC;
 
+$where .= ' ORDER BY start_date ASC';
 try {
     $result = $types
         ? getListWhere('events', $where, $types, $params)
@@ -34,5 +38,5 @@ try {
     echo json_encode($events);
 } catch (RuntimeException $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Query failed']);
+    echo json_encode(['error' => 'Query failed', 'message' => $e->getMessage()]);
 }

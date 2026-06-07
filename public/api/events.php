@@ -7,7 +7,7 @@ declare(strict_types=1);
 $dateParam = filter_input(INPUT_GET, 'date', FILTER_SANITIZE_SPECIAL_CHARS);
 $fromTs    = filter_input(INPUT_GET, 'from',   FILTER_VALIDATE_INT);
 $toTs      = filter_input(INPUT_GET, 'to',     FILTER_VALIDATE_INT);
-$catId     = filter_input(INPUT_GET, 'cat_id', FILTER_VALIDATE_INT);
+$category     = filter_input(INPUT_GET, 'category', FILTER_SANITIZE_SPECIAL_CHARS);
 
 // --------------------------------------------------
 // Pagination
@@ -23,10 +23,10 @@ $baseWhere  = 'WHERE active = 1';
 $baseTypes  = '';
 $baseParams = [];
 
-if ($catId) {
-    $baseWhere  .= ' AND cat_id = ?';
-    $baseTypes  .= 'i';
-    $baseParams[] = $catId;
+if ($category) {
+    $baseWhere  .= ' AND cat_id = (SELECT id FROM categories WHERE slug = ?)';
+    $baseTypes  .= 's';
+    $baseParams[] = $category;
 }
 
 if ($dateParam) {
