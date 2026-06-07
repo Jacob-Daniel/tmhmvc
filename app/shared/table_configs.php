@@ -107,13 +107,13 @@ return [
                 ['name' => 'featured', 'label' => 'Featured'],
             ]],
             ['type' => 'select',   'name' => 'cat_id',    'label' => 'Primary Category', 'source' => 'categories', 'optionLabel' => 'slug', 'sidebar' => true, 'required'=> true],
-            ['type' => 'number',   'name' => 'price',     'label' => 'Price',            'sidebar' => true],
+            ['type' => 'number',   'name' => 'price',     'label' => 'Price', 'required'=>true,'sidebar' => true],
             ['type' => 'image',    'name' => 'imagepath', 'label' => 'Select Main Image','sidebar' => true],
             ['type' => 'group',    'label' => 'Calendar', 'sidebar' => true, 'fields' => [
-                ['type' => 'date', 'name' => 'start_date', 'label' => 'Start Date'],
-                ['type' => 'date', 'name' => 'end_date',   'label' => 'End Date'],
-                ['type' => 'time', 'name' => 'start_time', 'label' => 'Start Time'],
-                ['type' => 'time', 'name' => 'end_time',   'label' => 'End Time'],
+                ['type' => 'date', 'name' => 'start_date', 'required'=>true, 'label' => 'Start Date'],
+                ['type' => 'date', 'name' => 'end_date', 'required'=>true,   'label' => 'End Date'],
+                ['type' => 'time', 'name' => 'start_time', 'required'=>true, 'label' => 'Start Time'],
+                ['type' => 'time', 'name' => 'end_time', 'required'=>true,   'label' => 'End Time'],
             ]],
             ['type' => 'recurring', 'sidebar' => true],   // handled as a special block
             ['type' => 'number',   'name' => 'sequence',  'label' => 'Sequence',         'sidebar' => true],

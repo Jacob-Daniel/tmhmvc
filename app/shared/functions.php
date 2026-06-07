@@ -1477,7 +1477,7 @@ function renderFormField(array $field, ?object $rec, array $extras = []): string
 		               name="<?= $name ?>"
 		               step="any"
 		               value="<?= $value ? $value : 0?>"
-		               class="border rounded px-2 py-1 text-sm">
+		               class="border rounded px-2 py-1 text-sm" <?= $required ?>>
 		    </div>
 		    <?php break;
 
@@ -1497,7 +1497,7 @@ function renderFormField(array $field, ?object $rec, array $extras = []): string
 		        <label class="text-sm"><?= htmlspecialchars($label) ?></label>
 		        <input name="<?= $name ?>"
 		               class="timepickr border rounded px-2 py-1 text-sm"
-		               value="<?= $value ?>">
+		               value="<?= $value ?>" <?= $required ?>>
 		    </div>
 		    <?php break;
 
