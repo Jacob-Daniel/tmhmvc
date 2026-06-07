@@ -30,21 +30,24 @@ if ($catId) {
 }
 
 if ($dateParam) {
-    // exact date match
-    $midnight = strtotime($dateParam . ' 00:00:00');
-    $baseWhere  .= ' AND DATE(FROM_UNIXTIME(start_date)) = DATE(FROM_UNIXTIME(?))';
-    $baseTypes  .= 'i';
-    $baseParams[] = $midnight;
+    // FIXED: Use UTC date range
+    $startUTC = strtotime($dateParam . ' 00:00:00 UTC');
+    $endUTC   = strtotime($dateParam . ' 23:59:59 UTC');
+    
+    $baseWhere  .= ' AND start_date BETWEEN ? AND ?';
+    $baseTypes  .= 'ii';
+    $baseParams[] = $startUTC;
+    $baseParams[] = $endUTC;
 } elseif ($fromTs) {
     $baseWhere  .= ' AND start_date >= ?';
     $baseTypes  .= 'i';
     $baseParams[] = $fromTs;
 } else {
-    // default — from today midnight
-    $midnight     = strtotime('today midnight');
+    // Default: from today midnight UTC
+    $midnightUTC = strtotime('today midnight UTC');
     $baseWhere  .= ' AND start_date >= ?';
     $baseTypes  .= 'i';
-    $baseParams[] = $midnight;
+    $baseParams[] = $midnightUTC;
 }
 
 if ($toTs) {

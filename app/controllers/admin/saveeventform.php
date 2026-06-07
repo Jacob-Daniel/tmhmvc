@@ -66,7 +66,7 @@ function saveOccurrence(array $data, bool $isCanonical, string $canonicalSlug): 
 
 if ($isEdit) {
     //Pre-Process data fields
-    $_POST['start_date'] = (string)(int)strtotime($startDateRaw . ' ' . $startTime);
+    $_POST['start_date'] = (string)(int)strtotime($startDateRaw . ' ' . $startTime . ' UTC');
     $_POST['end_date']   = (string)(int)strtotime($endDateRaw   . ' ' . $endTime);
     require __DIR__ . '/saveform.php';
     exit;
