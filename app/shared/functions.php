@@ -1036,7 +1036,12 @@ function actionButtons(array $config = []) {
 		    <button id="btn-generate-token" type="button" data-action="token" class="bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700 transition">
 		        <?= empty($id) ? 'Generate Token' : 'Regenerate Token' ?>
 		    </button>
-		<?php endif; ?>        
+		<?php endif; ?>
+		<?php if (isset($targets['send'])) : ?>
+            <button type="button" data-action="save" class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 transition">
+		        Send
+		    </button>
+		<?php endif; ?>  
 
     </div>
 <?php

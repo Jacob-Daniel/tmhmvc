@@ -141,10 +141,7 @@ if ($remainingToSend > 0): ?>
                     'module'  => 'massmail',
                     'id'      => $id,
                     'targets' => [
-                        'save'    => 'massmailform',
-                        'back'    => 'massmaillist',
-                        'new'     => 'massmailform',
-                        'refresh' => 'massmailform',
+                        'send'    => 'massmailform',
                     ],
                 ]); ?>
             </div>
@@ -154,21 +151,9 @@ if ($remainingToSend > 0): ?>
                 <ul class="list-disc list-inside text-xs space-y-1">
                     <li>Select a template and a recipient group</li>
                     <li>Check the subject line</li>
-                    <li>Use the Send button only when ready &mdash; this queues a real send</li>
+                    <li>Use the Send button only when ready, this queues a real send</li>
                 </ul>
             </div>
-
-            <div class="border p-3 rounded-sm">
-                <button
-                    type="button"
-                    id="send-mass-mail-btn"
-                    class="w-full bg-green-600 text-white text-sm px-3 py-2 rounded hover:bg-green-700 disabled:opacity-50"
-                >
-                    Send to Group &rarr;
-                </button>
-                <p id="send-status" class="mt-2 text-xs text-gray-500"></p>
-            </div>
-
         </div>
     </fieldset>
 </form>

@@ -255,7 +255,7 @@ final class ImageUpload
 
     private function createThumbs(string $source, string $base, string $filename, string $ext): void
     {
-        foreach ([200, 60] as $size) {
+        foreach ([150, 60] as $size) {
             $dir = $base . $size . '/';
             if (!is_dir($dir)) {
                 mkdir($dir, 0755, true);

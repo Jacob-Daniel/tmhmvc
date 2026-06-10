@@ -263,7 +263,7 @@ function buildEmailBody(object $mrec, object $config, string $emailto): string
         $footer .= '</div>';
         $body = '<div style="border:1px solid gainsboro; margin:0px 30px; max-width: 650px;">';
         $body .= '<div style="font-size:14px; padding: 15px;">'; 
-        $body .= '<div style="margin-bottom:20px;"><img width="150" height="42" alt="' . $config->comp_name . '" src="' . BASE_URL_IMG_DIR . $config->imagepath . '"></div>';        
+        $body .= '<div style="margin-bottom:20px;"><img width="150" height="42" alt="' . $config->comp_name . '" src="' . BASE_URL_IMG_DIR .'/'. $config->imagepath . '"></div>';        
         $body .= '<h1 style="color:#e84c23;">' . $mrec->em_name . '</h1>';  // add main template body
         $body .= $mrec->em_body;  // add main template body
         $body .= '</div>';
@@ -281,10 +281,10 @@ function replacePlaceholders(string $body, string $emailto, object $config): str
         $parts    = explode('_', trim($v, '{}'));
         $event    = getRecord('events', 'id', $parts[1]);
         $cat      = getRecord('categories', 'id', $parts[2]);
-        $eventurl = NEXTJS_BASE_URL . 'whats-on/' . $cat->slug . '/' . $event->slug;
+        $eventurl = NEXTJS_BASE_URL . '/whats-on/' . $cat->slug . '/' . $event->slug;
         $html     = '<div style="margin-bottom:10px; padding:10px 0px; border-bottom:1px solid gainsboro;">'
                   . '<a href="' . $eventurl . '">' . $event->title . '</a><br />'
-                  . '<img style="padding:10px 0px" height="400" width="400" src="' . BASE_URL_IMG_DIR . $event->imagepath . '"><br />'
+                  . '<img style="padding:10px 0px" height="400" width="400" src="' . BASE_URL_IMG_DIR .'/'. $event->imagepath . '"><br />'
                   . $event->summary . '<br/><br/>'
                   . '</div>';
         $body = str_replace($v, $html, $body);
@@ -295,7 +295,7 @@ function replacePlaceholders(string $body, string $emailto, object $config): str
     foreach ($pageplaceholders[0] as $v) {
         $parts  = explode('_', trim($v, '{}'));
         $page   = getRecord('pages', 'id', $parts[1]);
-        $body   = str_replace($v, '<a href="' . NEXTJS_BASE_URL . $page->slug . '">' . $page->title . '</a>', $body);
+        $body   = str_replace($v, '<a href="' . NEXTJS_BASE_URL .'/'.$page->slug . '">' . $page->title . '</a>', $body);
     }
 
     $body = str_replace('{EMAIL}',    $emailto,          $body);
