@@ -138,7 +138,7 @@ while ($m = $mlist->fetch_object()) {
         $m->m_subj,
         GOOGLE_MAIL_FROM,
         'm',
-        $accessToken,
+        $client,
         $config
     );
 

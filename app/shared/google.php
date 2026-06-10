@@ -1,6 +1,6 @@
 <?php
+require_once __DIR__ . '/../../vendor/autoload.php';	
 function getGoogleOAuthUrl(): string {
-    require_once __DIR__ . '/../../vendor/autoload.php';	
     $client = new Google_Client();
     $client->setClientId(GOOGLEAPI_CLIENT_ID);
     $client->setClientSecret(GOOGLEAPI_CLIENT_SECRET);
@@ -14,8 +14,6 @@ function getGoogleOAuthUrl(): string {
 
 function handleGoogleOAuthTokenFlow(mysqli $db)
 {
-    require_once __DIR__ . '/../../vendor/autoload.php';
-
     $client = new Google_Client();
     $client->setClientId(GOOGLEAPI_CLIENT_ID);
     $client->setClientSecret(GOOGLEAPI_CLIENT_SECRET);
@@ -100,8 +98,6 @@ function handleGoogleOAuthTokenFlow(mysqli $db)
 
 function refreshGoogleAccessToken(mysqli $db, $tokenId = 1)
 {
-    require_once __DIR__ . '/../../vendor/autoload.php';
-
     $query = "SELECT refresh_token FROM oauth_tokens WHERE id = ?";
     $stmt = $db->prepare($query);
     $stmt->bind_param("i", $tokenId);
@@ -161,7 +157,7 @@ function sendGsuite(
     $subject, 
     $from, 
     $mailtype, 
-    string $token,
+    Google_Client $client,
     object $config,
 ): bool {
     global $db;
@@ -208,7 +204,6 @@ function sendGsuite(
     $body = replacePlaceholders($body, $emailto, $config);
 
     // Send
-    $client = GoogleApiClientFactory::getClient($token);
     $gmail  = new Google_Service_Gmail($client);
 
     $rawMessage  = "From: {$from}\r\n";
