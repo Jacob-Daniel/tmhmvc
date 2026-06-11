@@ -231,7 +231,7 @@ function sendGsuite(
 
 function buildEmailBody(object $mrec, object $config, string $emailto): string
 {
-    $usuburl = NEXTJS_BASE_URL . 'unsubscribe';
+    $usuburl = NEXTJS_BASE_URL .'/'.'unsubscribe';
   $footer  = '<div style="padding:10px; font-size:14px; background-color:#6f866a;">';
         $footer .= '<ul style="margin:0px 0px 15px 0px; padding:0px; list-style:none;">';
         $footer .= '<li><b>' . $config->comp_name . '</b><br />';
@@ -246,7 +246,7 @@ function buildEmailBody(object $mrec, object $config, string $emailto): string
         $footer .= '</li>';
         $footer .= '<li>';
         $footer .= '<b>Support</b>';
-        $footer .= '<a style="display:block; color:black;" href="' . NEXTJS_BASE_URL . 'support">Support</a>';
+        $footer .= '<a style="display:block; color:black;" href="' . NEXTJS_BASE_URL .'/'.'support">Support</a>';
         $footer .= '</li>';
         $footer .= '</ul>';
         $footer .= '<ul style="margin:0px 0px 15px 0px; padding:0px; list-style:none;">';

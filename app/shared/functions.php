@@ -1630,6 +1630,18 @@ function renderFormField(array $field, ?object $rec, array $extras = []): string
 	                      class="w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200"><?= htmlspecialchars($seo?->metaDescription ?? '', ENT_QUOTES) ?></textarea>
 	        </div>
 	        <div class="flex flex-col gap-y-1">
+	            <label class="text-sm font-medium text-gray-700">ogTitle</label>
+	            <input name="seo_ogTitle"
+	                   value="<?= htmlspecialchars($seo?->ogTitle ?? '', ENT_QUOTES) ?>"
+	                   class="w-full border rounded px-3 py-1.5 text-sm focus:ring focus:ring-blue-200">
+	        </div>	        
+	        <div class="flex flex-col gap-y-1">
+	            <label class="text-sm font-medium text-gray-700">Meta ogDescription</label>
+	            <textarea name="seo_ogDescription"
+	                      rows="3"
+	                      class="w-full border rounded px-3 py-2 text-sm focus:ring focus:ring-blue-200"><?= htmlspecialchars($seo?->ogDescription ?? '', ENT_QUOTES) ?></textarea>
+	        </div>	        
+	        <div class="flex flex-col gap-y-1">
 	            <label class="text-sm font-medium text-gray-700">Keywords</label>
 	            <input name="seo_keywords"
 	                   value="<?= htmlspecialchars($seo?->keywords ?? '', ENT_QUOTES) ?>"
