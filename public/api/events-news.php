@@ -4,20 +4,6 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 
 // --------------------------------------------------
-// Filters
-// --------------------------------------------------
-
-$fromTs = filter_input(INPUT_GET, 'from', FILTER_VALIDATE_INT);
-$toTs   = filter_input(INPUT_GET, 'to',   FILTER_VALIDATE_INT);
-
-if (!$fromTs  || !$toTs ) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Missing fromTs or toTs parameter']);
-    exit;
-}
-
-
-// --------------------------------------------------
 // Pagination
 // --------------------------------------------------
 $page     = max(1, filter_input(INPUT_GET, 'page', FILTER_VALIDATE_INT) ?: 1);
@@ -33,19 +19,8 @@ $where  = 'WHERE active = 1
            AND TIME(start_time) >= "17:00:00"';
 $types  = '';
 $params = [];
-$total = $countResult->num_rows;
 
-if ($fromTs) {
-    $where   .= ' AND start_date >= ?';
-    $types   .= 'i';
-    $params[] = $fromTs;
-}
-
-if ($toTs) {
-    $where   .= ' AND start_date <= ?';
-    $types   .= 'i';
-    $params[] = $toTs;
-}
+$where.= ' AND start_date >= UNIX_TIMESTAMP(CURDATE())';
 
 // --------------------------------------------------
 // Total count — same WHERE but no LIMIT
