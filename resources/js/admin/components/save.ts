@@ -24,7 +24,10 @@ export async function saveForm(form: HTMLFormElement) {
             showMessage(text, "error");
             return;
         }
-
+        if (data.success === false) {
+            showMessage(data.error ?? "There was a problem saving.", "error");
+            return;
+        }
         showMessage(data.message ?? "Saved", data.type ?? "success");
     } catch (err: any) {
         console.error("saveForm error:", err);

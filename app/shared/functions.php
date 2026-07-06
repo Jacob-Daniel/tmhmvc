@@ -984,6 +984,7 @@ function renderChooseImage(array $opts = []): void
 function actionButtons(array $config = []) {
     $module = $config['module'] ?? 'page';
     $id = $config['id'] ?? '';
+    $label = $config['label'] ?? 'Save';
     $targets = $config['targets'] ?? []; 
     $class = $config['class'] ?? "flex flex-col space-y-2 min-w-0";
 ?>
@@ -998,7 +999,7 @@ function actionButtons(array $config = []) {
 
         <?php if (isset($targets['save'])) : ?>
             <button type="button" data-action="save" class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 transition">
-                Save
+                <?= htmlspecialchars($label, ENT_QUOTES) ?>
             </button>
         <?php endif; ?>
 

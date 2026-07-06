@@ -20,19 +20,17 @@ export function initActionDelegates() {
         const action = btn.dataset.action;
         const target = container.dataset[action];
 
-        if (!target) return;
-
         switch (action) {
             case "back":
             case "new":
-                await window.loadContent(target!);
+                if (!target) return;
+                await window.loadContent(target);
                 break;
-
             case "refresh":
             case "edit":
-                if (id) await window.loadContent(target!, id);
+                if (!target || !id) return;
+                await window.loadContent(target, id);
                 break;
-
             case "save":
                 const form =
                     document.querySelector<HTMLFormElement>("form[data-ajax]");

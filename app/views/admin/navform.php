@@ -1,4 +1,3 @@
-
 <form action="/admin/api/saveform" method="post" enctype="multipart/form-data" data-ajax id="navform">
     <input type="hidden" name="edit" value="<?= $id; ?>" />
     <input type="hidden" name="table" value="navigation" />

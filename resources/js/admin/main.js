@@ -3,7 +3,6 @@ import "./types";
 import { showToast } from "./components/uiMessages";
 import { initImageModal, openImageModal } from "./components/imageModal.ts";
 import { showMessage } from "./components/uiMessages";
-// import flatpickr from "flatpickr";
 import { initGallery } from "./components/gallery";
 import { setActiveMenu } from "./components/setActiveMenu";
 import { initForm } from "./components/form";
@@ -15,7 +14,6 @@ import { initAjaxForms, saveForm } from "./components/save";
 import { editF, hideEdit, goEdit, goProds } from "./components/editField.ts";
 import { multipleDelete, updateDeleteButton } from "./components/delImage";
 import { initActionDelegates } from "./components/actionButtons.ts";
-// import { initEmailCampaign } from "./components/emailCampaign";
 import { initEmailForm } from "./components/emailForm";
 
 import {

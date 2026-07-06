@@ -1,5 +1,4 @@
 <?php
-// ── Google token status banner ──────────────────────────────────────────────
 if ($tokenStatus === 'missing'): ?>
     <div class="mb-4 rounded border border-red-300 bg-red-50 px-4 py-3 text-sm text-red-800">
         <strong>Initial Google Access Required.</strong>
@@ -25,7 +24,6 @@ if ($tokenStatus === 'missing'): ?>
 <?php endif; ?>
 
 <?php
-// ── Quota / pending info ─────────────────────────────────────────────────────
 if ($remainingToSend > 0): ?>
     <div class="mb-2 rounded border border-green-200 bg-green-50 px-4 py-2 text-sm text-green-800">
         You can still send <strong><?= (int)$remainingToSend ?></strong> emails today.
@@ -60,8 +58,6 @@ if ($remainingToSend > 0): ?>
         <legend class="font-semibold text-gray-700">
             <?= $id ? 'Edit Send' : 'New Mass Mail' ?>
         </legend>
-
-        <?php /* Main column */ ?>
         <div class="md:col-span-8 space-y-4 bg-white">
 
             <div id="message" class="hidden w-full mb-5 p-2"></div>
@@ -132,16 +128,15 @@ if ($remainingToSend > 0): ?>
             </div>
 
         </div>
-
-        <?php /* Sidebar */ ?>
         <div class="md:col-span-4 flex flex-col gap-y-3 min-w-0">
 
             <div class="flex flex-col space-y-2 min-w-0">
                 <?php actionButtons([
-                    'module'  => 'massmail',
-                    'id'      => $id,
+                    'module'  => '',
+                    'id'      => '',
+                    'label'   => 'send',
                     'targets' => [
-                        'send'    => 'massmailform',
+                        'save' => '',
                     ],
                 ]); ?>
             </div>
