@@ -26,8 +26,7 @@ return [
             // Sidebar
             ['type' => 'section', 'sidebar' => true, 'fields' => [
                 ['type' => 'image', 'name' => 'imagepath', 'label' => 'Select Main Image','sidebar' => true],
-            ]],
-            ['type' => 'select',   'name' => 'featured_event_id',    'label' => 'Fetatured Event', 'source' => 'events', 'optionLabel' => 'slug', 'sidebar' => true, 'required'=> true],            
+            ]],           
             ['type' => 'section', 'label' => 'Donate', 'sidebar' => true, 'fields' => [
                 ['type' => 'text', 'name' => 'donate_title',   'label' => 'Donate Title',  'sidebar' => true],
                 ['type' => 'text', 'name' => 'donate_desc', 'label' => 'Donate Description', 'sidebar' => true],
@@ -156,6 +155,7 @@ return [
             // sidebar
             ['type' => 'checkbox', 'name' => 'active',   'label' => 'Active',           'sidebar' => true],
             ['type' => 'image',    'name' => 'imagepath', 'label' => 'Main Image',       'sidebar' => true],
+            ['type' => 'select',  'name' => 'featured_event_id', 'label' => 'Fetatured Event', 'source' => 'events', 'optionLabel' => 'slug', 'sidebar' => true, 'required'=> true],               
             ['type' => 'textarea', 'name' => 'metak',    'label' => 'SEO: Meta Keywords','sidebar' => true],
             ['type' => 'textarea', 'name' => 'metad',    'label' => 'SEO: Meta Description', 'sidebar' => true],
         ],

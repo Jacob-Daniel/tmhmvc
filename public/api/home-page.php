@@ -29,7 +29,7 @@ try {
     }   
     $page->banners = $banners ?? null;
     
-    $featured = getRow('events',['slug','imagepath','title','cat_id','summary'],'active = 1 && featured =1') ?? [];
+    $featured = getRow('events',['slug','imagepath','title','cat_id','summary'],'active = 1 && id = ' . $page->featured_event_id) ?? [];
     if($featured) {
         $catid = $featured['cat_id'];
         $featured['cat_slug'] = getRow('categories',['slug'],"id = '$catid'")['slug'];

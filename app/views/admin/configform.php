@@ -1,1 +1,1 @@
-<?= buildForm($rec, $config, ['seo' => $seo,'events'=> $events]); ?>
+<?= buildForm($rec, $config, ['seo' => $seo]); ?>

@@ -1,2 +1,2 @@
 <?php render('components/imageModal', ['images' => $images]); ?>
-<?= buildForm($rec, $config, ['seo' => $seo]); ?>
+<?= buildForm($rec, $config, ['seo' => $seo,'events'=> $events]); ?>

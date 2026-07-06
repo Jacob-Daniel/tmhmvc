@@ -16,4 +16,5 @@ render('pageform', [
     'config' => $config,
     'seo' => $seo,
     'images' => getList('images', ' ORDER BY id'),
+    'events' => getList('events', 'where is_canonical = 1 ORDER BY created DESC'),    
 ]);
