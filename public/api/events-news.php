@@ -25,34 +25,38 @@ $where.= ' AND start_date >= UNIX_TIMESTAMP(CURDATE())';
 // --------------------------------------------------
 // Total count — same WHERE but no LIMIT
 // --------------------------------------------------
-$countWhere = 'WHERE active = 1
-               AND DAYOFWEEK(FROM_UNIXTIME(start_date)) = 1
-               AND TIME(start_time) >= "17:00:00"';
-$countTypes  = '';
-$countParams = [];
+$countWhere = $where
+// $countWhere = 'WHERE active = 1
+//                AND DAYOFWEEK(FROM_UNIXTIME(start_date)) = 1
+//                AND TIME(start_time) >= "17:00:00"';
+// $countTypes  = '';
+// $countParams = [];
 
-if ($fromTs) {
-    $countWhere   .= ' AND start_date >= ?';
-    $countTypes   .= 'i';
-    $countParams[] = $fromTs;
-}
-if ($toTs) {
-    $countWhere   .= ' AND start_date <= ?';
-    $countTypes   .= 'i';
-    $countParams[] = $toTs;
-}
+// if ($fromTs) {
+//     $countWhere   .= ' AND start_date >= ?';
+//     $countTypes   .= 'i';
+//     $countParams[] = $fromTs;
+// }
+// if ($toTs) {
+//     $countWhere   .= ' AND start_date <= ?';
+//     $countTypes   .= 'i';
+//     $countParams[] = $toTs;
+// }
 
-$countResult = $countTypes
-    ? getListWhere('events', $countWhere, $countTypes, $countParams)
-    : getList('events', $countWhere);
+// $countResult = $countTypes
+//     ? getListWhere('events', $countWhere, $countTypes, $countParams)
+//     : getList('events', $countWhere);
 
-$total = $countResult->num_rows;
+$countResult = getList('events', $countWhere);
+
 
 if (!$countResult ) {
     http_response_code(404);
     echo json_encode(['error' => 'News Events not found']);
     exit;
 }
+
+$total = $countResult->num_rows;
 
 $where .= " ORDER BY start_date DESC LIMIT ? OFFSET ?";
 $types   .= 'ii';
@@ -66,7 +70,6 @@ try {
 
     $events = [];
     while ($row = $result->fetch_assoc()) {
-        // $row['blocks'] = htmlToBlocks($row['content'] ?? ''); // can not do this without PHP packages ..
         $events[] = $row;
     }
 
