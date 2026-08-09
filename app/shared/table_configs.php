@@ -155,7 +155,7 @@ return [
             // sidebar
             ['type' => 'checkbox', 'name' => 'active',   'label' => 'Active',           'sidebar' => true],
             ['type' => 'image',    'name' => 'imagepath', 'label' => 'Main Image',       'sidebar' => true],
-            ['type' => 'select',  'name' => 'featured_event_id', 'label' => 'Fetatured Event', 'source' => 'events', 'optionLabel' => 'slug', 'sidebar' => true, 'required'=> true],               
+            ['type' => 'select',  'name' => 'featured_event_id', 'label' => 'Fetatured Event', 'source' => 'events', 'optionLabel' => 'slug', 'sidebar' => true, 'required'=> false],               
             ['type' => 'textarea', 'name' => 'metak',    'label' => 'SEO: Meta Keywords','sidebar' => true],
             ['type' => 'textarea', 'name' => 'metad',    'label' => 'SEO: Meta Description', 'sidebar' => true],
         ],

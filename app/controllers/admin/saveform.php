@@ -194,14 +194,15 @@ if (isset($_POST['has_active_field']) && isset($columns['active'])) {
     $data['active'] = isset($_POST['active']) ? 1 : 0;
 }
 
-$entityTypeMap = [
-    'pages'      => 'webpages',
-    'events'     => 'article',
-    'config'     => 'organization',
-    'categories' => 'categories',
-];
+$formKey = null;
+foreach ($tableConfigs as $key => $cfg) {
+    if (($cfg['table'] ?? null) === $table && isset($cfg['entityType'])) {
+        $formKey = $key;
+        break;
+    }
+}
 
-$entityType = $entityTypeMap[$table] ?? $table;
+$entityType = $formKey ? $tableConfigs[$formKey]['entityType'] : $table;
 
 if ($id) {
 
@@ -319,10 +320,11 @@ if ($id) {
         saveLinkedRecord(
             linkTable:   'seo_links',
             targetTable: 'seo',
-            entityType:  $table,
+            entityType:  $entityType,
             entityId:    $insertId,
             fields:      ['metaTitle','metaDescription','keywords','canonicalURL',
-                          'ogImageAlt','noIndex','structuredDataType'],
+                  'ogTitle','ogDescription','ogImage','ogImageAlt',
+                  'noIndex','structuredDataType'],
             data:        $seoData
         );
     }
