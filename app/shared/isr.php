@@ -1,10 +1,8 @@
 <?php
 declare(strict_types=1);
 
-function revalidateISR(array $paths): array
+function revalidateISR(array $paths, string $secret, string $baseUrl): array
 {
-    $secret  = defined('NEXTJS_ISR_SECRET') ? NEXTJS_ISR_SECRET : '';
-    $baseUrl = defined('NEXTJS_BASE_URL')   ? NEXTJS_BASE_URL   : '';
     $responses = [];
 
     foreach ($paths as $path) {

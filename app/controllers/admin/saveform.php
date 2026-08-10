@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 header('Content-Type: application/json');
 
+$tableConfigs = require APP_PATH . '/shared/table_configs.php';
+require_once __DIR__ . '/../../shared/isr.php';
+
 if (isset($_POST['password']) && $_POST['password'] !== '') {
 
     $password = trim($_POST['password']);
@@ -340,7 +343,14 @@ $catSlug = '';
 if ($table === 'events' && !empty($data['cat_id'])) {
     $cat = getRecord('categories', 'id', $data['cat_id']);
     $catSlug = $cat->slug ?? '';
+    $secret  = defined('NEXTJS_ISR_SECRET_HE') ? NEXTJS_ISR_SECRET_HE : '';
+    $baseUrl = defined('FRONTEND_URL_HE')   ? FRONTEND_URL_HE   : '';
+    $isrPathsMap = ['events'     => ['/', '/readings/']];
+error_log("=== DEBUG: save events ===");
+    revalidateISR($isrPathsMap[$table],$secret,$baseUrl);    
+
 }
+
 $isrPathMap = [
     'pages'      => ['/', '/'. ($data['slug'] ?? '')],
     'categories' => ['/', '/whats-on'],
@@ -349,9 +359,11 @@ $isrPathMap = [
     'navigation' => ['/','/whats-on','/our-story','/donate','/hire','/subscribe','/find-us'],
 ];
 
+
 if (isset($isrPathMap[$table])) {
-    require_once __DIR__ . '/../../shared/isr.php';
-    revalidateISR($isrPathMap[$table]);
+    $secret  = defined('NEXTJS_ISR_SECRET') ? NEXTJS_ISR_SECRET : '';
+    $baseUrl = defined('NEXTJS_BASE_URL')   ? NEXTJS_BASE_URL   : '';
+    revalidateISR($isrPathMap[$table],$secret,$baseUrl);
 }
 
 $response = ['message' => $message, 'type' => 'success'];

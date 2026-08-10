@@ -20,12 +20,12 @@ $where  = 'WHERE active = 1
 $types  = '';
 $params = [];
 
-$where.= ' AND start_date >= UNIX_TIMESTAMP(CURDATE())';
+// $where.= ' AND start_date >= UNIX_TIMESTAMP(CURDATE())';
 
 // --------------------------------------------------
 // Total count — same WHERE but no LIMIT
 // --------------------------------------------------
-$countWhere = $where
+$countWhere = $where;
 // $countWhere = 'WHERE active = 1
 //                AND DAYOFWEEK(FROM_UNIXTIME(start_date)) = 1
 //                AND TIME(start_time) >= "17:00:00"';
@@ -48,7 +48,6 @@ $countWhere = $where
 //     : getList('events', $countWhere);
 
 $countResult = getList('events', $countWhere);
-
 
 if (!$countResult ) {
     http_response_code(404);
