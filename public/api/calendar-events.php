@@ -2,7 +2,6 @@
 declare(strict_types=1);
 
 $category = filter_input(INPUT_GET, 'category', FILTER_SANITIZE_SPECIAL_CHARS);
-$midnight = strtotime('midnight');
 $where  = 'WHERE active = 1';
 $types  = '';
 $params = [];
@@ -12,11 +11,6 @@ if ($category) {
     $types .= 's';
     $params[] = $category;
 }
-
-$midnightUTC = strtotime('today midnight UTC');
-$where  .= ' AND start_date >= ?';
-$types  .= 'i';
-$params[] = $midnightUTC;
 
 $where .= ' ORDER BY start_date ASC';
 try {
